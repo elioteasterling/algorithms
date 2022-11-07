@@ -1,4 +1,4 @@
-import List from "../List.js"
+import List from "../data_structures/List.js"
 
 const l = new List()
 
