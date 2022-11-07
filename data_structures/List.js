@@ -3,7 +3,22 @@ import Node from "./Node.js"
 export default class List {
     size = 0
     head = null
-    tail = null
+    tail = null;
+
+    // "for of" impl
+    [Symbol.iterator]() {
+        let current = this.head    
+        return {
+            next: () => {
+                const value = current.value
+                current = current.next
+                return { 
+                    value, 
+                    done: !current
+                }
+            }
+        }
+    }
 
     clear() {
         this.head = null
