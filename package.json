@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "jest": "^29.3.0"
+  },
+  "type": "module"
+}
