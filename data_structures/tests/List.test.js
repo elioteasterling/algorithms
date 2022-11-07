@@ -1,6 +1,6 @@
-import LinkedList from "../LinkedList.js"
+import List from "../List.js"
 
-const l = new LinkedList()
+const l = new List()
 
 l.addFront(2)
 l.addFront(7)

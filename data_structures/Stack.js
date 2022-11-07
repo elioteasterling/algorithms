@@ -1,9 +1,9 @@
-import LinkedList from "./LinkedList.js"
+import List from "./List.js"
 
 // quicker access but total time is slower and more memory is used 
 export class Stack {
 
-    list = new LinkedList()
+    list = new List()
 
     push(value) { this.list.addFront(value) }
 

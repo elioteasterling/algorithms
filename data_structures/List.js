@@ -1,6 +1,6 @@
 import Node from "./Node.js"
 
-export default class LinkedList {
+export default class List {
     size = 0
     head = null
     tail = null
