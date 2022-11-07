@@ -7,3 +7,12 @@ export default class Node {
         this.value = v
     }
 }
+
+export class SlimNode {
+    value
+    next = null
+
+    constructor(v = null) {
+        this.value = v
+    }
+}
