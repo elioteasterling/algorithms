@@ -2,6 +2,7 @@ import LinkedList from "./LinkedList.js"
 
 // quicker access but total time is slower and more memory is used 
 export class Stack {
+
     list = new LinkedList()
 
     push(value) { this.list.addFront(value) }
@@ -14,14 +15,15 @@ export class Stack {
 // total time is better and uses less memory but quick access isn't guarenteed due to array resizing
 export class ArrayStack {
 
-    list = []
+    list = []                             // overflow guard - resizing array
     n = 0
 
     push(value) { this.list[n++] = value }
 
     pop () { 
+        if (this.isEmpty()) return null   // underflow guard - return null if there's nothing to pop
         const result = this.list[--n]
-        this.list[n] = null             // collect whatever's inside the array at position n
+        this.list[n] = null               // garbage collect whatever's inside the array at position n
         return result
     }
 
