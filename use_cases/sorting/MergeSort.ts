@@ -10,13 +10,13 @@ import { insertionSort } from './InsertionSort.js'
        - N - 1 compares, 6N lg N array accesses
        - 3N lg N memory
 */
-export function mergeSort(unsorted, immutable = true) {
+export function mergeSort(unsorted: any[], immutable = true) {
     const sorted = sort(unsorted, [], 0, unsorted.length - 1)
-    if (immutable) return Array.from(sorted)
+    if (immutable && sorted) return Array.from(sorted)
     return sorted
 }
 
-function merge(unsorted, aux, lo, mid, hi) {
+function merge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number) {
 
     for (let i = lo; i <= hi; i++)  aux[i] = unsorted[i]     // copy
 
@@ -30,14 +30,14 @@ function merge(unsorted, aux, lo, mid, hi) {
 }
 
 const CUTOFF = 8
-function sort(unsorted, aux, lo, hi) {
+function sort(unsorted: any[], aux: any[], lo: number, hi: number) {
 
     if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted, false)
     
     const mid = lo + Math.floor((hi - lo) / 2)
     sort(unsorted, aux, lo, mid)
     sort(unsorted, aux, mid + 1, hi)
-    if (a[mid + 1] >= a[mid]) return    // already in order => do nothing // brings N lg N compares down to N - 1
+    if (aux[mid + 1] >= aux[mid]) return    // already in order => do nothing // brings N lg N compares down to N - 1
     merge(unsorted, aux, lo, mid, hi)
     return unsorted
 }
@@ -46,15 +46,15 @@ function sort(unsorted, aux, lo, hi) {
         - takes up more memory than merge sort
         - removes the copy time for each merge
 */
-export function fastMergeSort(unsorted) {
-    let aux = []
+export function fastMergeSort(unsorted: any[], immutable = true) {
+    let aux: Array<any> = []
     for (let i = 0; i < unsorted.length; i++) aux[i] = unsorted[i]  // copy
     const sorted = fastSort(unsorted, [], 0, unsorted.length - 1)
-    if (immutable) return Array.from(sorted)
+    if (immutable && sorted) return Array.from(sorted)
     return sorted
 }
 
-function fastMerge(unsorted, aux, lo, mid, hi) {
+function fastMerge(unsorted: any[], aux: any[], lo, mid, hi) {
     let i = lo, j = mid + 1
     for (let k = lo; k <= hi; k++) {
         if (i > mid)                aux[k] = unsorted[j++]          // merge
@@ -64,33 +64,33 @@ function fastMerge(unsorted, aux, lo, mid, hi) {
     }
 }
 
-function fastSort(aux, unsorted, lo, mid) {
+function fastSort(aux: any[], unsorted: any[], lo: number, hi: number) {
 
     if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted, false)
-    
+    let sorted = aux
     const mid = lo + Math.floor((hi - lo) / 2)
-    fastSort(aux, unsorted, lo, mid)
-    fastSort(aux, unsorted, mid + 1, hi)
+    fastSort(sorted, unsorted, lo, mid)
+    fastSort(sorted, unsorted, mid + 1, hi)
 
-    if (a[mid + 1] >= a[mid]) return    // already in order => do nothing
+    if (sorted[mid + 1] >= sorted[mid]) return    // already in order => do nothing
 
-    fastMerge(unsorted, aux, lo, mid, hi)
-    return unsorted
+    fastMerge(unsorted, sorted, lo, mid, hi)
+    return sorted
 }
 
 /*  BOTTOM UP MERGE SORT
         - takes up more memory
         - removes recursivity - industrial grade perf
 */
-export function bottomUpMergeSort(unsorted, immutable = true) {
-    let aux = []
+export function bottomUpMergeSort(unsorted: any[], immutable = true) {
+    let aux: any[] = []
     for (let i = 0; i < unsorted.length; i++) aux[i] = unsorted[i]      // copy
     const sorted = bottomUpSort(unsorted, aux)
-    if (immutable) return Array.from(sorted)
+    if (immutable) return Array.from(sorted as any) as any[]
     return sorted
 }
 
-function bottomUpMerge(unsorted, aux, lo, mid, hi) {
+function bottomUpMerge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number) {
     let i = lo, j = mid + 1
     for (let k = lo; k <= hi; k++) {
         if (i > mid)                aux[k] = unsorted[j++]              // merge
@@ -100,7 +100,7 @@ function bottomUpMerge(unsorted, aux, lo, mid, hi) {
     }
 }
 
-function bottomUpSort(unsorted, aux) {
+function bottomUpSort(unsorted: any[], aux: any[]) {
     let n = unsorted.length
     for (let size = 1; size < n; size = size + size)
         for (let lo = 0; lo < n - size; lo += size + size)

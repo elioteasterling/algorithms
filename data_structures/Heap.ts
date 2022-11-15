@@ -2,18 +2,12 @@
     Binary Heap via Array<any>
 */
 
-interface Comparable {
-    greater : (a: any, b: any) => boolean
-}
-
 export class BinaryHeap {
-    private heap    : any[]      = []
-    private root    : number     = 1 // holds the largest value (ignore heap[0] to make the arithmetic easier)
-    private greater : (a: any, b: any) => boolean
-    pointer         : number;
+    private heap    : any[] = []
+    private greater : Function
  
-    constructor(firstGreaterThanSecond: Comparable) {
-        this.greater = firstGreaterThanSecond.greater
+    constructor(firstGreaterThanSecond: Function) {
+        this.greater = firstGreaterThanSecond
     }
 
     // add node to end -> swim it up
@@ -23,8 +17,14 @@ export class BinaryHeap {
     }
 
     // swap the root node with the last node (remove that last node and return it) -> swim the new root down
-    popMax() {
+    max() {
         this.swap(1, this.heap.length - 1)
+        const result = this.heap.pop()
+        this.sink(1)
+        return result
+    }
+
+    min() {
         const result = this.heap.pop()
     }
 

@@ -1,6 +1,6 @@
 import { Stack } from "../data_structures/Stack"
 
-export const evaluate = (exp) => {
+export const evaluate = (exp: string) => {
     const values    = new Stack()
     const operators = new Stack()
 
