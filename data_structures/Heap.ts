@@ -2,7 +2,7 @@
     Binary Heap via Array<any>
 */
 
-export type ComparableFunction = (a: any, b: any) => boolean
+import { ComparableFunction } from "contracts/data-structures"
 
 export class BinaryHeap {
     private heap    : any[] = []

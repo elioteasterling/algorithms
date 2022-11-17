@@ -1,4 +1,4 @@
-import { BinaryHeap, ComparableFunction } from './Heap'
+import { BinaryHeap } from './Heap'
 import List from "./List"
 
 // constant time for all ops other than "for of"

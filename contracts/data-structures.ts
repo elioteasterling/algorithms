@@ -1,0 +1,1 @@
+export type ComparableFunction = (a: any, b: any) => boolean
