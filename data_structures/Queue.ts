@@ -1,5 +1,7 @@
-import List from "./List";
+import { BinaryHeap, ComparableFunction } from './Heap'
+import List from "./List"
 
+// constant time for all ops other than "for of"
 export class Queue {
 
     list = new List()
@@ -14,27 +16,25 @@ export class Queue {
     [Symbol.iterator]() {   
         return this.list
     }
-}
+} 
 
+/*
+    STATS:
+    add => logN, min => 1, max => logN, peek => 1
+*/
 export class PriorityQueue {
-    pq: any[] = []
+    heap = new BinaryHeap( (a: any, b: any) => a > b)
 
-    isEmpty() { return this.pq.length === 0 }
+    isEmpty() { return this.heap.size() === 0 }
 
-    add(value: any) { this.pq.push(value) }
+    add(value: any) { this.heap.insert(value) }
 
-    max() {
-        let biggest = 0
-        for (let i = 0; i < this.pq.length; i++) {
-            if (biggest < this.pq[i]) biggest = i
-        }
-        this.swap(1, this.pq.length - 1)
-        return this.pq.pop()
-    }
+    max() { return this.heap.max() }
 
-    swap(pos1: number, pos2: number) {
-        const value = this.pq[pos1]
-        this.pq[pos1] = this.pq[pos2]
-        this.pq[pos2] = value
+    min() { return this.heap.min() }
+
+    // "for of" impl
+    [Symbol.iterator]() {   
+        return this.heap
     }
 }

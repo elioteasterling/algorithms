@@ -4,7 +4,7 @@ export default class Bag {
     list = new List()
     size = 0
 
-    add(thing) { this.list.addFront(thing) }
+    add(thing: any) { this.list.addFront(thing) }
 
     // "for of" impl
     [Symbol.iterator]() {    

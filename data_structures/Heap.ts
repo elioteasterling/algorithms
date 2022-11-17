@@ -2,11 +2,13 @@
     Binary Heap via Array<any>
 */
 
+export type ComparableFunction = (a: any, b: any) => boolean
+
 export class BinaryHeap {
     private heap    : any[] = []
-    private greater : Function
+    private greater : ComparableFunction
  
-    constructor(firstGreaterThanSecond: Function) {
+    constructor(firstGreaterThanSecond: ComparableFunction) {
         this.greater = firstGreaterThanSecond
     }
 
@@ -24,24 +26,22 @@ export class BinaryHeap {
         return result
     }
 
-    min() {
-        const result = this.heap.pop()
-    }
+    min() { return this.heap.pop() }
 
-    swap(child: number, parent: number) {
+    private swap(child: number, parent: number) {
         const baby= this.heap[child]
         this.heap[child]  = this.heap[parent]
         this.heap[parent] = baby
     }
 
-    children(i: number) : number[] { return [Math.floor(i * 2), Math.floor(i * 2) + 1] }
-    parent(  i: number) : number   { return  Math.floor(i / 2) }
+    //private children(i: number) : number[] { return [Math.floor(i * 2), Math.floor(i * 2) + 1] }
+    private parent(  i: number) : number   { return  Math.floor(i / 2) }
 
     // keeps heap order when a child's value is greater than their parent's
     // while root -> if parent greater than child, swap them and repeat
     // go down
-    sink(j: number) {
-        let i = j
+    private sink(child: number) {
+        let i: number = child
         while (i < this.heap.length - 1 && this.greater(i, this.parent(i))) {
             this.swap(i, this.parent(i))
             i = this.parent(i)
@@ -49,11 +49,18 @@ export class BinaryHeap {
     }
 
     // go up -> parent is less than child in value
-    swim(i: number) { 
+    private swim(i: number) { 
         let pos = i
         while (pos > 1 && this.greater(pos, this.parent(pos))) {
             this.swap(pos, this.parent(pos))
             pos = this.parent(i)
         } 
+    }
+
+    size() { return this.heap.length }
+
+    // "for of" impl
+    [Symbol.iterator]() {
+        return this.heap
     }
 }

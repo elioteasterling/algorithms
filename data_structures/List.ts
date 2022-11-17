@@ -9,7 +9,6 @@ export default class List extends Node {
     [Symbol.iterator]() {
         if (!this.head) return []
         let current: Node = (this.head as unknown as Node)
-        current.value = 0 
         return {
             next: () => {
                 let value: any = current.value
@@ -79,10 +78,5 @@ export default class List extends Node {
             this.size--
         }
         return original.value
-    }
-
-    existsOrInit(obj: any) {
-        if (!obj) obj = []
-        return !!obj 
     }
 }
