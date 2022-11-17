@@ -1,5 +1,5 @@
 /*
-    Binary Heap via Array<any>
+    Binary Heap via array
 */
 
 import { ComparableFunction } from "contracts/data-structures"
@@ -34,26 +34,34 @@ export class BinaryHeap {
         this.heap[parent] = baby
     }
 
-    //private children(i: number) : number[] { return [Math.floor(i * 2), Math.floor(i * 2) + 1] }
+    private children(i: number) : number[] { return [Math.floor(i * 2), Math.floor(i * 2) + 1] }
     private parent(  i: number) : number   { return  Math.floor(i / 2) }
 
     // keeps heap order when a child's value is greater than their parent's
     // while root -> if parent greater than child, swap them and repeat
     // go down
-    private sink(child: number) {
-        let i: number = child
-        while (i < this.heap.length - 1 && this.greater(i, this.parent(i))) {
-            this.swap(i, this.parent(i))
-            i = this.parent(i)
+    private sink(parent: number) {
+        let p = parent
+        let c = this.children(p)
+        const l = c[0], r = c[1]
+        while (this.childrenAreBigger(c, p) && p < this.heap.length - 1) {
+            if      (this.greater(r, p)) this.swap(r, p)
+            else if (this.greater(l, p)) this.swap(l, p)
+            p = this.parent(p)
         } 
     }
 
+    childrenAreBigger(c: number[], p: number) {
+        const l = c[0], r = c[1]
+        return this.greater(l, p) || this.greater(r, p)
+    }
+
     // go up -> parent is less than child in value
-    private swim(i: number) { 
-        let pos = i
-        while (pos > 1 && this.greater(pos, this.parent(pos))) {
-            this.swap(pos, this.parent(pos))
-            pos = this.parent(i)
+    private swim(child: number) { 
+        let c = child
+        while (c > 1 && this.greater(c, this.parent(c))) {
+            this.swap(c, this.parent(c))
+            c = this.parent(c)
         } 
     }
 
