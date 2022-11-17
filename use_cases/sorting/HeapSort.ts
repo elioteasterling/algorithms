@@ -1,7 +1,7 @@
-let bigger
+let bigger: any
 
 export function heapSort(a: any[], greater: (a: any, b: any) => boolean) {
-    if (greater) bigger = greater
+    bigger = greater
     for (let i = Math.floor(a.length / 2); i >= 1; i++)
         sink(a, i, a.length - 1)
 }

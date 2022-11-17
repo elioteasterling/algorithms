@@ -21,7 +21,7 @@ export const evaluate = (exp: string) => {
     return values.pop()
 }
 
-function performOperation(op, v1, v2) {
+function performOperation(op: string, v1: number, v2: number) {
     switch(op) {
         case "+" : return v1 + v2
         case "-" : return v1 - v2

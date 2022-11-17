@@ -7,22 +7,19 @@
 
 // union: find rootOf(p) and rootOf(q) => ids[rootOf(q)] = ids[rootOf(p)]
 
-class QuickUnion {
-    ids = []
-    constructor(n) {
-        for (let i = 0; i < n; i++) this.ids[i] = i
-    }
+export class QuickUnion {
+    ids: number[] = []
 
-    root(i) {
+    root(i: number): number {
         while (i != this.ids[i]) i = this.ids[i]
         return i
     }
 
-    static connected(p, q) {
+    connected(p: number, q: number) {
         return this.root(p) === this.root(q)
     }
 
-    static union(p, q) {
+    union(p: number, q: number) {
         let rp = this.root(p)
         let rq = this.root(q)
         this.ids[rp] = rq
@@ -39,15 +36,11 @@ class QuickUnion {
 */
 
 // depth of any node is at most lg (log base 2) n
-class WeightedQuickUnionWithPathCompression {
-    ids = []
-    sz  = []
+export class WeightedQuickUnionWithPathCompression {
+    ids: number[] = []
+    sz: any []  = []
 
-    constructor(n) {
-        for (let i = 0; i < n; i++) this.ids[i] = i
-    }
-
-    root(i) {
+    root(i: number) {
         while (i !== this.ids[i]) {         // path compression -> two-pass => every node points to root
             this.ids[i] = this.ids[this.ids[i]]   // path compression -> one pass -> every other node points to it's grandparent => 1/2 the path length
             i = this.ids[i]
@@ -55,11 +48,11 @@ class WeightedQuickUnionWithPathCompression {
         return i
     }
 
-    static connected(p, q) {
+    connected(p: number, q: number) {
         return this.root(p) === this.root(q)
     }
 
-    static union(p, q) {
+    union(p: number, q: number) {
         let rp = this.root(p)
         let rq = this.root(q)
         if (rp === rq) return

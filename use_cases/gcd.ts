@@ -1,4 +1,4 @@
-export const gcd = (p: number, q: number) => {
+export const gcd = (p: number, q: number) : number => {
     if (q === 0) return p
-    else return gcd(q, p % q)
+    return gcd(q, p % q)
 }

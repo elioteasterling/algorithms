@@ -54,7 +54,7 @@ export function fastMergeSort(unsorted: any[], immutable = true) {
     return sorted
 }
 
-function fastMerge(unsorted: any[], aux: any[], lo, mid, hi) {
+function fastMerge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number) {
     let i = lo, j = mid + 1
     for (let k = lo; k <= hi; k++) {
         if (i > mid)                aux[k] = unsorted[j++]          // merge
