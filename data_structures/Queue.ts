@@ -22,7 +22,8 @@ export class Queue<T> {
     STATS:
     add => logN, min => 1, max => logN, peek => 1
 */
-export class PriorityQueue<T> {
+export class PriorityQueue<T> implements Iterable<T> {
+
     heap: BinaryHeap<T> = new BinaryHeap( (a: Record<string, T>, b: Record<string, T>, key?: string) => {
         if (key) return a[key] > b[key]
         return a > b
@@ -36,8 +37,17 @@ export class PriorityQueue<T> {
 
     min() { return this.heap.min() }
 
-    // "for of" impl
-    [Symbol.iterator]() {   
-        return this.heap
+    get size() { return this.heap.size }
+
+    [Symbol.iterator](): Iterator<T, any, undefined> {
+        let i = 0
+        return {
+            next: (): IteratorResult<T, any> => {
+                return {
+                    value: this.heap.rawAccess[i++],
+                    done: i < this.heap.rawAccess.length
+                }
+            }
+        }
     }
 }

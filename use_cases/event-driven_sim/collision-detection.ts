@@ -1,4 +1,6 @@
-import { PriorityQueue } from './../../data_structures/Queue'
+import { Comparable }    from 'contracts/data-structures'
+import { PriorityQueue } from 'data_structures/Queue'
+import { Drawable }      from './drawable'
 
 /*
     Example: molecular dynamics of hard discs
@@ -56,143 +58,41 @@ import { PriorityQueue } from './../../data_structures/Queue'
 
  */
                     
-const width: number = 500, height: number = 500
+export const width:  number = 512
+export const height: number = 512
+export const radius: number = 16
+export const mass:   number = 32
 
-export class Particle {
+export class CollisionEvent implements Comparable {
+    a: Drawable
+    b: Drawable
+    time: number
 
-    private radius: number = 20
-    private mass:   number = 1
-    lowestTime:     number = Infinity
-
-    constructor(radius: number, mass: number, initialPosition: { x: number, y: number }) {
-        this.px = initialPosition.x
-        this.py = initialPosition.y
-        this.radius = radius
-        this.mass   = mass
+    constructor(time: number, p1?: Drawable, p2?: Drawable) {
+        this.time = time
+        if (p1) this.a = p1 
+        else this.a = new Drawable(1, 1, { x: 1, y: 1 })
+        if (p2) this.b = p2
+        else this.b = new Drawable(1, 1, { x: 1, y: 1 })
     }
 
-    get time() {
-        const ballCollisionTime  = this.timeTillCollision(this)
-        const wallCollisionTimeY = this.timeTillCollisionWithVerticalWall(this)
-        const wallCollisionTimeX = this.timeTillCollisionWithHorizontalWall(this)
-        const times: number[] = []
-        if (ballCollisionTime  !== Infinity) times.push(ballCollisionTime)
-        if (wallCollisionTimeX !== Infinity) times.push(wallCollisionTimeX)
-        if (wallCollisionTimeY !== Infinity) times.push(wallCollisionTimeY)
-        return Math.min(...times)
+    greater(e: CollisionEvent) {
+        return this.time > e.time
     }
 
-    // position
-    private px: number = 0
-    private py: number = 0
-
-    // velocity
-    private vx: number = 0
-    private vy: number = 0
-
-    move(dt: number) {
-        // detect collisions with walls
-        if ((this.px + this.vx*dt < this.radius) || (this.px + this.vx*dt > 1.0 - this.radius)) this.vx = -this.vx
-        if ((this.py + this.vy*dt < this.radius) || (this.py + this.vy*dt > 1.0 - this.radius)) this.vy = -this.vy
-        // update current position wrt to the speed of the particle at that moment // first derivative of velocity wrt time (dt)
-        this.px += this.vx*dt
-        this.py += this.vy*dt
-        return this
+    isValid() {
+        return true
     }
-
-    draw() {}
-
-    timeTillCollision(p: Particle) {
-        if (this === p) return Infinity
-        let dx:   number = p.px   - this.px,
-            dy:   number = p.py   - this.py,
-            dvx:  number = p.vx   - this.vx,
-            dvy:  number = p.vy   - this.vy,
-            dvdr: number = dx*dvx + dy*dvy
-        if (dvdr > 0) return Infinity
-
-        let dvdv  = dvx^2 + dvy^2
-        let drdr  = dx^2  + dy^2
-        let sigma = 2 * this.radius
-
-        let d = (dvdr^2 - dvdv * (drdr - sigma^2))
-        if (d < 0) return Infinity
-
-        return -(dvdr + Math.sqrt(d)) / dvdv
-    }
-
-    timeTillCollisionWithVerticalWall(p: Particle) {
-        // detect time until collision wrt the top and bottom walls
-        if (p === this) return Infinity
-        const sigma = p.radius
-        const dt    = (height - sigma - p.py) / p.vy
-        
-        if (p.py + p.vy*dt < p.radius) {                // hit top wal
-            p.vy = -p.vy
-            p.py = 0 + sigma
-            p.px = p.px + p.vx*dt
-            return dt
-        } else if (p.py + p.vy*dt > height - p.radius) { // hit bottom wal
-            p.vx = -p.vx
-            p.px = width - sigma
-            p.py = p.py + p.vy*dt
-            return dt
-        }
-        return Infinity
-    }
-
-    timeTillCollisionWithHorizontalWall(p: Particle) {
-       // detect time until collision wrt the top and bottom walls
-       if (p === this) return Infinity
-       const sigma = p.radius
-       const dt    = (width - sigma - p.px) / p.vx
-       
-       if (p.px + p.vx*dt < sigma) {                // hit left wal
-           p.vx = -p.vx
-           p.px = 0 + sigma
-           p.py = p.py + p.vy*dt
-           return dt
-       } else if (p.px + p.vx*dt > width - sigma) { // hit right wal
-           p.vx = -p.vx
-           p.px = width - sigma
-           p.py = p.py + p.vy*dt
-           return dt
-       }
-       return Infinity
-    }
-
-    bounce(p: Particle) {
-        let dx:   number = p.px - this.px, dy:  number = p.py - this.py
-        let dvx:  number = p.vx - this.vx, dvy: number = p.vy - this.vy
-        let dvdp: number = dx*dvx + dy*dvy
-        let dist: number = p.radius + this.radius
-        let J:    number = 2 * this.mass * dvdp / ((this.mass + p.mass) * dist)
-        let Jx:   number = J * dx / dist
-        let Jy:   number = J * dy / dist
-        this.vx += Jx / this.mass
-        this.vy += Jy / this.mass
-        p.vx -= Jx / p.mass
-        p.vy -= Jy / p.mass
-    }
-    verticalWallBounce() {}
-    horizontalWallBounce() {}
 }
 
-export class Sim {
-    
-    particles = new PriorityQueue<Particle>()
-    n: number
+export class CollisionSystem {
+    private pq        = new PriorityQueue<CollisionEvent>()
+    private time      = Date.now()
+    private drawables = new Array<Drawable> ()
 
-    constructor(balls: number) {
-        this.n = balls
-        for (let i = 0; i < balls; i++) this.particles.add(new Particle(
-            (Math.random() * 15),   // radius
-            (Math.random() * 20),   // mass
-            {                       // initial x & y position
-                x: Math.round(Math.ceil(Math.random()) * width), 
-                y: Math.round(Math.ceil(Math.random()) * height)
-            }
-        ))
+    constructor(elements: number) {
+        for (let i = 0; i < elements; i++) this.calcCollisionsFor(this.drawables[i])
+        this.clear()
     }
 
     clear() {
@@ -203,14 +103,48 @@ export class Sim {
         
     }
 
-    start() {
-        while(true) {
-            this.clear()
-            for(let i = 0; i < this.n; i++) {                
-                const min: Particle = this.particles.min() || new Particle(1, 1, { x: 1, y: 1 })
-                if(min) min.move(0.5).draw()
-            }
-            this.paint()
+    simulate() {
+        while(!this.pq.isEmpty()) {
+            // next event
+            const event = this.pq.min()
+            if(!event?.isValid()) continue
+            const a = event.a
+            const b = event.b
+
+            // update position and time
+            for(let d of this.drawables) d.move(event.time - this.time)
+            this.time = event.time
+
+            // process event
+            if (a && b) a.bounce(b)
+            else if (a && !b) a.verticalWallBounce()
+            else if (!a && b) b.horizontalWallBounce()
+            else this.paint()
+
+            // add the next collisions wrt their new position & velocity
+            this.calcCollisionsFor(a)
+            this.calcCollisionsFor(b)
         }
+    }
+
+    main() {
+        // get and delete min drawable
+        // if invalid -> ignore
+        // update each drawable's position
+        // update velocities upon collision
+        // recalc all collisions for the aforementioned removed drawable and put them all back into the pq
+    }
+
+    calcCollisionsFor(d: Drawable) {
+        if (!d) return null
+        for (let i = 0; i < this.pq.size(); i++) {
+            const dt: number = d.timeTillCollision(this.drawables[i])
+            // calc all of this Drawable collisions wrt every other particles
+            this.pq.add(new CollisionEvent(this.time + dt, d, this.drawables[i]))
+        }
+        const e1 = new CollisionEvent(this.time + d.timeTillCollisionWithVerticalWall())
+        const e2 = new CollisionEvent(this.time + d.timeTillCollisionWithHorizontalWall())
+        this.pq.add(e1)
+        this.pq.add(e2)
     }
 }

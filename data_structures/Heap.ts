@@ -7,6 +7,8 @@ import { ComparableFunction } from "contracts/data-structures"
 export class BinaryHeap<T> {
     private heap    : T[] = []
     private greater : ComparableFunction
+
+    get rawAccess() { return this.heap }
  
     constructor(firstGreaterThanSecond: ComparableFunction) {
         this.greater = firstGreaterThanSecond
@@ -67,8 +69,15 @@ export class BinaryHeap<T> {
 
     size() { return this.heap.length }
 
-    // "for of" impl
-    [Symbol.iterator]() {
-        return this.heap
+    [Symbol.iterator](): Iterator<T, any, undefined> {
+        let i = 0
+        return {
+            next: (): IteratorResult<T, any> => {
+                return {
+                    value: this.heap[i],
+                    done: i++ < this.heap.length
+                }
+            }
+        }
     }
 }
