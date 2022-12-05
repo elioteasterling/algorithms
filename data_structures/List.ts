@@ -1,14 +1,19 @@
 import Node from "./Node"
 
-export default class List extends Node {
+export default class List<T> {
     size = 0
-    head?: Node
-    tail?: Node
+    head?: Node<T>
+    tail?: Node<T>
+
+    constructor(value?: T | T[]) {
+        if (Array.isArray(value)) for (let v of value) this.addBack(v)
+        else if (value) this.addBack(value)
+    }
 
     // "for of" impl
     [Symbol.iterator]() {
         if (!this.head) return []
-        let current: Node = (this.head as unknown as Node)
+        let current: Node<T> = (this.head as unknown as Node<T>)
         return {
             next: () => {
                 let value: any = current.value
@@ -27,21 +32,21 @@ export default class List extends Node {
         this.size = 0
     }
 
-    connect(n1: Node, n2: Node) {
+    connect(n1: Node<T>, n2: Node<T>) {
         n1.next = n2
         n2.prev = n1
     }
 
-    addFront(value: any) {
-        const node: Node = new Node(value)
+    addFront(value: T) {
+        const node: Node<T> = new Node(value)
         if (this.size === 0) this.tail = node
         else if (this.head) this.connect(node, this.head)
         this.head = node
         return ++this.size
     }
 
-    addBack(value: any) {
-        const node = new Node(value)
+    addBack(value: T) {
+        const node: Node<T> = new Node(value)
         if (this.size === 0) this.head = node
         else if (this.tail) this.connect(this.tail, node)
         this.tail = node

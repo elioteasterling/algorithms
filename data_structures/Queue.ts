@@ -2,11 +2,11 @@ import { BinaryHeap } from './Heap'
 import List from "./List"
 
 // constant time for all ops other than "for of"
-export class Queue {
+export class Queue<T> {
 
-    list = new List()
+    list = new List<T>()
 
-    enqueue(value: any) { return this.list.addFront(value) }
+    enqueue(value: T) { return this.list.addFront(value) }
 
     dequeue() { return this.list.removeBack() }
 
@@ -22,12 +22,15 @@ export class Queue {
     STATS:
     add => logN, min => 1, max => logN, peek => 1
 */
-export class PriorityQueue {
-    heap = new BinaryHeap( (a: any, b: any) => a > b)
+export class PriorityQueue<T> {
+    heap: BinaryHeap<T> = new BinaryHeap( (a: Record<string, T>, b: Record<string, T>, key?: string) => {
+        if (key) return a[key] > b[key]
+        return a > b
+    })
 
     isEmpty() { return this.heap.size() === 0 }
 
-    add(value: any) { this.heap.insert(value) }
+    add(value: T) { this.heap.insert(value) }
 
     max() { return this.heap.max() }
 

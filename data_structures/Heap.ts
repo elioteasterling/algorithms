@@ -4,8 +4,8 @@
 
 import { ComparableFunction } from "contracts/data-structures"
 
-export class BinaryHeap {
-    private heap    : any[] = []
+export class BinaryHeap<T> {
+    private heap    : T[] = []
     private greater : ComparableFunction
  
     constructor(firstGreaterThanSecond: ComparableFunction) {
@@ -13,7 +13,7 @@ export class BinaryHeap {
     }
 
     // add node to end -> swim it up
-    insert(value: any) {
+    insert(value: T) {
         const length = this.heap.push(value)
         this.swim(length - 1)
     }
@@ -29,7 +29,7 @@ export class BinaryHeap {
     min() { return this.heap.pop() }
 
     private swap(child: number, parent: number) {
-        const baby= this.heap[child]
+        const baby        = this.heap[child]
         this.heap[child]  = this.heap[parent]
         this.heap[parent] = baby
     }
