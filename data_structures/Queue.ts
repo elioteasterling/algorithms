@@ -2,7 +2,7 @@ import { BinaryHeap } from './Heap'
 import List from "./List"
 
 // constant time for all ops other than "for of"
-export class Queue<T> {
+export class Queue<T> implements Iterable<T> {
 
     list = new List<T>()
 
@@ -13,8 +13,15 @@ export class Queue<T> {
     isEmpty() { return this.list.size === 0 }
 
     // "for of" impl
-    [Symbol.iterator]() {   
-        return this.list
+    *[Symbol.iterator](): Iterator<T, any, undefined> {
+        let h = this.list.head
+        let c = h?.value
+        while (h?.next) {
+            c = h.value
+            h = h.next
+            if (!c) continue
+            yield c
+        }
     }
 } 
 
