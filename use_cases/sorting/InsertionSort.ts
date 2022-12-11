@@ -1,17 +1,13 @@
 // STABLE => when sorting by one key and then another, the first sort remains
+
+import { Comparable } from "contracts/data-structures"
+import { exchange } from "Helpers/array-helper"
+
 // only good for small or almost completely sorted arrays
-export function insertionSort(unsorted: any[], immutable = true) {
-    let i = 1
-    while (i < unsorted.length) {
-        let x = unsorted[i]
-        let j = i - 1
-        while (j >= 0 && unsorted[j] > x) {
-            unsorted[j + 1] = unsorted[j]
-            j--
-        }
-        unsorted[j + 1] = x
-        i++
-    }
-    if (immutable) return Array.from(unsorted)
-    return unsorted
+export function insertionSort(unsorted: Comparable[]) {
+    const L = unsorted.length
+    for (let i = 0; i < L; i++)
+        for (let j = i; j > 0; j--)
+            if (unsorted[j].compareTo(unsorted[j - 1]) < 0) exchange(unsorted, j, j - 1)
+            else break
 }

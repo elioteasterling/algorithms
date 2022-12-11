@@ -1,30 +1,35 @@
-import { Valuable } from "contracts/data-structures"
+import { Comparable } from "contracts/data-structures"
 
 // container for key-value pairs
-export class SymbolTable<K extends Valuable, V extends Valuable> implements Iterable<V> {
+export class SymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
     keys: Record<string, K> = {}
-    vals: Record<string, V | undefined> = {}
+    vals: Record<string, V> = {}
+
+    get length() {
+        return Object.keys(this.keys).length
+    }
 
     put(k: K, v?: V) {
         if (!v) return this.del(k)
-        const h = this.hashCodeFor(k)
+        const h = this.hashedKey(k)
         this.keys[h] = k
         this.vals[h] = v
     }                         // same key => overides value
-    get(k: K): V | undefined  { return this.vals[this.hashCodeFor(k)] }    // returns val || undefined if nonexistent
+    get(k: K): V | undefined  { return this.vals[this.hashedKey(k)] }    // returns val || undefined if nonexistent
     // lazy delete => let gc handle it
     del(k: K)               { this.put(k) }
     has(k: K)               { return this.get(k) !== undefined }
     isEmpty(): boolean      { return this.size() > 0 }
     size(): number          { return 0 }
     greaterThan(k: K, v: V): boolean  {
-        const hash = this.hashCodeFor(k)
-        if (this.vals[hash] === undefined)  return false
-        else if (v === undefined)           return true
-        else                                return this.vals[hash]?.value() > v.value()
+        const h = this.hashedKey(k)
+        if (this.vals[h] === undefined) return false
+        else if (v === undefined)       return true
+        else if (this.vals[h])          return this.vals[h].compareTo(v) > 0
+        return false
     }
 
-    hashCodeFor(k: K): string { return JSON.stringify(k) }
+    hashedKey(k: K): string { return JSON.stringify(k) }
 
     *[Symbol.iterator](): Iterator<V> {
         for (const v of Object.values(this.vals))
@@ -32,7 +37,7 @@ export class SymbolTable<K extends Valuable, V extends Valuable> implements Iter
     }
 }
 
-export class OrderedSymbolTable<K, V extends Valuable> implements Iterable<V> {
+export class OrderedSymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
     keys: Record<string, K> = {}
     vals: Record<string, V | undefined> = {}
 
@@ -48,11 +53,9 @@ export class OrderedSymbolTable<K, V extends Valuable> implements Iterable<V> {
     has(k: K)               { return this.get(k) !== undefined }
     isEmpty(): boolean      { return this.size() > 0 }
     size(): number          { return 0 }
-    greaterThan(k: K, v: V): boolean  {
-        const hash = this.hashCodeFor(k)
-        if (this.vals[hash] === undefined)  return false
-        else if (v === undefined)           return true
-        else                                return this.vals[hash]?.value() > v.value()
+    greaterThan(k: K, v: V): boolean {
+        const possibleValue: V | undefined = this.get(k)
+        return !!possibleValue && possibleValue.compareTo(v) > 0
     }
 
     min()    {}
