@@ -114,7 +114,7 @@ export class BinarySearchTree<K extends Valuable, V extends Valuable> implements
     }
 
     *[Symbol.iterator](): Iterator<K | undefined> {
-        const queue = new Queue<K | undefined>
+        const queue = new Queue<K | undefined>()
         this.inOrder(queue, this.root)
         for (const key of queue) {
             if (!key) continue
