@@ -12,8 +12,8 @@ export class Stack {
     isEmpty() { return this.list.size === 0 }
 
     // "for of" impl
-    [Symbol.iterator]() {   
-        return this.list
+    * [Symbol.iterator]() {   
+        for (const thing of this.list) yield thing
     }
 }
 
@@ -35,7 +35,7 @@ export class ArrayStack {
     isEmpty() { return this.n === 0 }
 
     // "for of" impl
-    [Symbol.iterator]() {   
-        return this.list
+    * [Symbol.iterator]() {   
+        for (const thing of this.list) yield thing
     }
 }

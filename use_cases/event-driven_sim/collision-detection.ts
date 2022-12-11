@@ -76,8 +76,10 @@ export class CollisionEvent implements Comparable {
         else this.b = new Drawable(1, 1, { x: 1, y: 1 })
     }
 
-    greater(e: CollisionEvent) {
-        return this.time > e.time
+    compareTo(e: CollisionEvent) {
+        if (this.time > e.time) return  1
+        if (this.time < e.time) return -1
+                                return  0
     }
 
     isValid() {

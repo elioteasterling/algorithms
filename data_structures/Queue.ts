@@ -1,3 +1,4 @@
+import { Comparable } from 'contracts/data-structures'
 import { BinaryHeap } from './Heap'
 import List from "./List"
 
@@ -13,14 +14,13 @@ export class Queue<T> implements Iterable<T> {
     isEmpty() { return this.list.size === 0 }
 
     // "for of" impl
-    *[Symbol.iterator](): Iterator<T, any, undefined> {
+    * [Symbol.iterator](): Iterator<T, any, undefined> {
         let h = this.list.head
-        let c = h?.value
         while (h?.next) {
-            c = h.value
+            let v = h.value
             h = h.next
-            if (!c) continue
-            yield c
+            if (v === undefined) continue
+            yield v
         }
     }
 } 
@@ -29,12 +29,9 @@ export class Queue<T> implements Iterable<T> {
     STATS:
     add => logN, min => 1, max => logN, peek => 1
 */
-export class PriorityQueue<T> implements Iterable<T> {
+export class PriorityQueue<T extends Comparable> implements Iterable<T> {
 
-    heap: BinaryHeap<T> = new BinaryHeap( (a: Record<string, T>, b: Record<string, T>, key?: string) => {
-        if (key) return a[key] > b[key]
-        return a > b
-    })
+    heap: BinaryHeap<T> = new BinaryHeap<T>()
 
     isEmpty() { return this.heap.size() === 0 }
 
@@ -46,15 +43,7 @@ export class PriorityQueue<T> implements Iterable<T> {
 
     get size() { return this.heap.size }
 
-    [Symbol.iterator](): Iterator<T, any, undefined> {
-        let i = 0
-        return {
-            next: (): IteratorResult<T, any> => {
-                return {
-                    value: this.heap.rawAccess[i++],
-                    done: i < this.heap.rawAccess.length
-                }
-            }
-        }
+    * [Symbol.iterator](): Iterator<T, any, undefined> {
+        for (const thing of this.heap) yield thing
     }
 }

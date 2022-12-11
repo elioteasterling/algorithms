@@ -7,7 +7,7 @@ export default class Bag {
     add(thing: any) { this.list.addFront(thing) }
 
     // "for of" impl
-    [Symbol.iterator]() {    
-        return this.list
+    * [Symbol.iterator]() {    
+        for (const thing of this.list) yield thing
     }
 }

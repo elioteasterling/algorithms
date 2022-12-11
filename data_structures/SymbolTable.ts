@@ -27,9 +27,8 @@ export class SymbolTable<K extends Valuable, V extends Valuable> implements Iter
     hashCodeFor(k: K): string { return JSON.stringify(k) }
 
     *[Symbol.iterator](): Iterator<V> {
-        for (let v of Object.values(this.vals))
-            if (v) yield v
-            else continue
+        for (const v of Object.values(this.vals))
+            if (v !== undefined) yield v
     }
 }
 
@@ -56,11 +55,11 @@ export class OrderedSymbolTable<K, V extends Valuable> implements Iterable<V> {
         else                                return this.vals[hash]?.value() > v.value()
     }
 
-    min() {}
-    max() {}
-    floor() {}
-    ceil() {}
-    rank() {}
+    min()    {}
+    max()    {}
+    floor()  {}
+    ceil()   {}
+    rank()   {}
     select() {}
     delMin() {}
     delMax() {}
@@ -68,8 +67,7 @@ export class OrderedSymbolTable<K, V extends Valuable> implements Iterable<V> {
     hashCodeFor(k: K): string { return JSON.stringify(k) }
 
     *[Symbol.iterator](): Iterator<V> {
-        for (let v of Object.values(this.vals))
-            if (v) yield v
-            else continue
+        for (const v of Object.values(this.vals))
+            if (v !== undefined) yield v
     }
 }

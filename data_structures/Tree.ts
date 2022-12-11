@@ -1,43 +1,38 @@
 import { BinarySearchTreeNode } from "./Node"
-import { Valuable } from 'contracts/data-structures'
+import { Comparable } from 'contracts/data-structures'
 import { Queue } from "./Queue"
 
 // equivocal to quick sort
-export class BinarySearchTree<K extends Valuable, V extends Valuable> implements Iterable<K | undefined> {
+export class BinarySearchTree<K extends Comparable, V extends Comparable> implements Iterable<K | undefined> {
+    
     root?: BinarySearchTreeNode<K, V>
-
-    value(): V {
-        return {} as V
-    }
 
     get(key: K): V | undefined {
         let n: BinarySearchTreeNode<K, V> | undefined = this.root
         while(n !== undefined) {
 
-            const greater = n.key?.value() > key.value()
+            const result = n.key?.compareTo(key)
 
-            if      ( greater) n = n.left
-            else if (!greater) n = n.right
+            if      (result === -1) n = n.left
+            else if (result ===  1) n = n.right
             else    return n.value
         }
         return undefined
     }
 
-    put(key: K, val: V) {
-        this.root = this.insert(key, val, this.root)
-    }
+    put(key: K, val: V) { this.root = this.insert(key, val, this.root) }
 
-    private insert(key: K, val: V, node?: BinarySearchTreeNode<K, V>): BinarySearchTreeNode<K, V> | undefined {
+    private insert(key: K, val: V, n?: BinarySearchTreeNode<K, V>): BinarySearchTreeNode<K, V> | undefined {
         
-        if (!node) return new BinarySearchTreeNode<K, V>(key, val)
+        if (!n) return new BinarySearchTreeNode<K, V>(key, val)
+        
+        let result: number = n.key?.compareTo(key) || 0
 
-        let n: BinarySearchTreeNode<K, V> | undefined = node
-        let greater: boolean | undefined              = n.key?.value() > key.value()
+        if      (result ===  1) n.right = this.insert(key, val, n.right)
+        else if (result === -1) n.left  = this.insert(key, val, n.left)
+        else                    n.value = val
 
-        if(greater)       n.right = this.insert(key, val, n.right)
-        else if(!greater) n.left  = this.insert(key, val, n.left)
-        else              n.value = val
-        n.count = this.sizeOfNode(node.left) + this.sizeOfNode(node.right)
+        n.numberOfChildren = this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
         return n
     }
 
@@ -46,17 +41,15 @@ export class BinarySearchTree<K extends Valuable, V extends Valuable> implements
         return found?.key
     }
 
-    private findFloor(key: K, node?: BinarySearchTreeNode<K, V>): BinarySearchTreeNode<K, V> | undefined {
-        if (!node) return undefined
+    private findFloor(key: K, n?: BinarySearchTreeNode<K, V>): BinarySearchTreeNode<K, V> | undefined {
+        if (!n) return undefined
 
-        const greater = node.key?.value() > key.value()
+        const result = n.key?.compareTo(key)
 
-        if(node.key?.value() === key.value()) return node
-        if(!greater) return this.findFloor(key, node.left)
-
-        const n = this.findFloor(key, node.right)
-        if (!n) return n
-        return node
+        if      (result ===  0) return n
+        else if (result === -1) return this.findFloor(key, n.left)
+        else if (result ===  1) return this.findFloor(key, n.right)
+        return undefined
     }
 
     ceil(key: K): K | undefined {
@@ -64,17 +57,15 @@ export class BinarySearchTree<K extends Valuable, V extends Valuable> implements
         return found?.key
     }
 
-    private findCeil(key: K, node?: BinarySearchTreeNode<K, V>): BinarySearchTreeNode<K, V> | undefined {
-        if (!node) return undefined
-        if(node.key?.value() === key.value()) return node
+    private findCeil(key: K, n?: BinarySearchTreeNode<K, V>): BinarySearchTreeNode<K, V> | undefined {
+        if (!n) return undefined
 
-        const lesser = node.key?.value() < key.value()
+        const result = n.key?.compareTo(key)
 
-        if(!lesser) return this.findCeil(key, node.left)
-
-        const n = this.findCeil(key, node.right)
-        if (!n) return n
-        return node
+        if      (result ===  0) return n
+        else if (result === -1) return this.findCeil(key, n.right)
+        else if (result ===  1) return this.findCeil(key, n.left)
+        return undefined
     }
 
     size(): number {
@@ -83,7 +74,7 @@ export class BinarySearchTree<K extends Valuable, V extends Valuable> implements
 
     sizeOfNode(n?: BinarySearchTreeNode<K, V>): number {
         if (!n) return 0
-        return n.count
+        return n.numberOfChildren
     }
 
     rank(key: K): number {
@@ -93,10 +84,10 @@ export class BinarySearchTree<K extends Valuable, V extends Valuable> implements
     nodeRank(key: K, n?: BinarySearchTreeNode<K, V>): number {
         if (!n) return 0
         
-        const lesser = n.key?.value() < key.value()
+        const result = n.key?.compareTo(key)
 
-        if (n.key?.value() === key.value()) return     this.sizeOfNode(n.left)
-        else if (lesser)                    return     this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
+        if (result === 0)      return     this.sizeOfNode(n.left)
+        else if (result == -1) return     this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
         else                                return 1 + this.sizeOfNode(n.left) + this.nodeRank(key, n.right)
     }
 
@@ -106,19 +97,29 @@ export class BinarySearchTree<K extends Valuable, V extends Valuable> implements
         return q
     }
 
+    values(): Queue<V> {
+        const v = new Queue<V>()
+        const q = new Queue<K>()
+        this.inOrder(q, this.root)
+        for (const key of q) {
+            const val = this.get(key)
+            if (val !== undefined) v.enqueue(val)
+        }
+        return v
+    }
+
     inOrder(q: Queue<K | undefined>, n?: BinarySearchTreeNode<K, V>) {
-        if (!n) return undefined
+        if (n === undefined) return
         this.inOrder(q, n.left)
         q.enqueue(n.key)
         this.inOrder(q, n.right)
     }
 
-    *[Symbol.iterator](): Iterator<K | undefined> {
+    * [Symbol.iterator](): Iterator<K | undefined> {
         const queue = new Queue<K | undefined>()
         this.inOrder(queue, this.root)
         for (const key of queue) {
-            if (!key) continue
-            yield key
+            if (key !== undefined) yield key
         }
     }
 }

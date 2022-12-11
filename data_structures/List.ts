@@ -11,18 +11,12 @@ export default class List<T> {
     }
 
     // "for of" impl
-    [Symbol.iterator]() {
-        if (!this.head) return []
-        let current: Node<T> = (this.head as unknown as Node<T>)
-        return {
-            next: () => {
-                let value: any = current.value
-                if (current && current.next) current = current.next
-                return { 
-                    value, 
-                    done: !current
-                }
-            }
+    * [Symbol.iterator]() {
+        let h: Node<T> = (this.head as Node<T>)
+        while (h.next) {
+            const v = h.value
+            h = h.next
+            yield v
         }
     }
 
