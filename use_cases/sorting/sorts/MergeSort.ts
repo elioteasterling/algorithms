@@ -32,7 +32,7 @@ function merge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number)
 const CUTOFF = 8
 function sort(unsorted: any[], aux: any[], lo: number, hi: number) {
 
-    if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted, false)
+    if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted)
     
     const mid = lo + Math.floor((hi - lo) / 2)
     sort(unsorted, aux, lo, mid)
@@ -66,7 +66,7 @@ function fastMerge(unsorted: any[], aux: any[], lo: number, mid: number, hi: num
 
 function fastSort(aux: any[], unsorted: any[], lo: number, hi: number) {
 
-    if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted, false)
+    if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted)
     let sorted = aux
     const mid = lo + Math.floor((hi - lo) / 2)
     fastSort(sorted, unsorted, lo, mid)
@@ -82,11 +82,10 @@ function fastSort(aux: any[], unsorted: any[], lo: number, hi: number) {
         - takes up more memory
         - removes recursivity - industrial grade perf
 */
-export function bottomUpMergeSort(unsorted: any[], immutable = true) {
+export function bottomUpMergeSort(unsorted: any[]) {
     let aux: any[] = []
     for (let i = 0; i < unsorted.length; i++) aux[i] = unsorted[i]      // copy
     const sorted = bottomUpSort(unsorted, aux)
-    if (immutable) return Array.from(sorted as any) as any[]
     return sorted
 }
 

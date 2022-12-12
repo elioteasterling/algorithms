@@ -1,6 +1,4 @@
-import { Comparable } from "contracts/data-structures"
-
-export function exchange(a: Comparable[], i: number, j: number) {
+export function exchange(a: any[], i: number, j: number) {
     const temp = a[i]
     a[i] = a[j]
     a[j] = temp

@@ -2,8 +2,8 @@ Name    |   inPlace?    |   stable?     |   worst   |   avg     |   best    |   
 ---------------------------------------------------------------------------------------
 selection       yes                        N^2 / 2      N^2 / 2     N^2 / 2     N exchanges
 insertion       yes         yes            N^2 / 2      N^2 / 4     N           use for small or parially ordered arrays
-shell           yes                                                 Name        tight code, subquadratic
+shell           yes                        N^(3/2)      ?           ?           tight code, subquadratic, quicker than insertion sort but still only good for small arrays
 quick           yes                        N^2 / 2      2NlogN      NlogN       quickest in practice
 3-way-quick     yes                        N^2 / 2      2NlogN      N           quick sort with duplicate keys
 merge                       yes            NlogN        NlogN       NlogN       stable
-heap            yes                        2/NlogN      2NlogN      NlogN       in place sorting
+heap            yes                        2NlogN       2NlogN      NlogN       in place sorting
