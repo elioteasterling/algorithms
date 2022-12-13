@@ -1,7 +1,7 @@
 // STABLE => when sorting by one key and then another, the first sort remains
 
-import { Comparable } from "contracts/data-structures"
-import { exchange } from "Helpers/array-helper"
+import { Comparable } from "contracts/sort"
+import { exchange } from "helpers/array"
 
 // only good for small or almost completely sorted arrays
 export function insertionSort(a: Comparable[], lo: number = 0, hi?: number) {

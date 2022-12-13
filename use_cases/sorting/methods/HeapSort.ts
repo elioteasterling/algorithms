@@ -1,4 +1,4 @@
-import { exchange } from 'Helpers/array-helper'
+import { exchange } from 'helpers/array'
 
 let heap: any[] = []
 

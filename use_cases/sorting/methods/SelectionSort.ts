@@ -1,5 +1,5 @@
-import { Comparable } from 'contracts/data-structures'
-import { exchange   } from 'Helpers/array-helper'
+import { Comparable } from 'contracts/sort'
+import { exchange   } from 'helpers/array'
 
 // n^2/2 compares, N exchanges - EVEN IF SORTED lol
 export function selectionSort(a: Comparable[]) {

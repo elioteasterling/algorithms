@@ -1,5 +1,5 @@
-import { Comparable } from "contracts/data-structures"
-import { exchange   } from "Helpers/array-helper"
+import { Comparable } from "contracts/sort"
+import { exchange   } from "helpers/array"
 
 // worst case w/ 3x + 1 is O(N^3/2)
 // h-sorted => like insertion sort (which has 1 stride) but with strides of length h

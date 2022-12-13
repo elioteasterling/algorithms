@@ -1,4 +1,4 @@
-import { Comparable }    from 'contracts/data-structures'
+import { Comparable }    from 'contracts/sort'
 import { PriorityQueue } from 'data_structures/Queue'
 import { Drawable }      from './drawable'
 

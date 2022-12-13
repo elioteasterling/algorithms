@@ -1,4 +1,4 @@
-import { Comparable } from "contracts/data-structures"
+import { Comparable } from "contracts/sort"
 import { Stack } from "data_structures/Stack"
 import { mergeSort } from "../methods/MergeSort"
 

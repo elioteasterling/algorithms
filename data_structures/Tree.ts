@@ -1,5 +1,5 @@
 import { BinarySearchTreeNode } from "./Node"
-import { Comparable } from 'contracts/data-structures'
+import { Comparable } from 'contracts/sort'
 import { Queue } from "./Queue"
 
 // equivocal to quick sort
@@ -21,6 +21,9 @@ export class BinarySearchTree<K extends Comparable, V extends Comparable> implem
     }
 
     put(key: K, val: V) { this.root = this.insert(key, val, this.root) }
+    
+    min(key: K, val: V) { } // keep going left
+    max(key: K, val: V) { } // keep going right
 
     private insert(key: K, val: V, n?: BinarySearchTreeNode<K, V>): BinarySearchTreeNode<K, V> | undefined {
         
@@ -48,8 +51,10 @@ export class BinarySearchTree<K extends Comparable, V extends Comparable> implem
 
         if      (result ===  0) return n
         else if (result === -1) return this.findFloor(key, n.left)
-        else if (result ===  1) return this.findFloor(key, n.right)
-        return undefined
+
+        let node: BinarySearchTreeNode<K, V> | undefined = this.findFloor(key, n.right)
+        if (node !== undefined) return node
+        return n
     }
 
     ceil(key: K): K | undefined {
@@ -64,11 +69,14 @@ export class BinarySearchTree<K extends Comparable, V extends Comparable> implem
 
         if      (result ===  0) return n
         else if (result === -1) return this.findCeil(key, n.right)
-        else if (result ===  1) return this.findCeil(key, n.left)
-        return undefined
+        
+        let node: BinarySearchTreeNode<K, V> | undefined = this.findCeil(key, n.left)
+        if (node !== undefined) return node
+        return n
     }
 
-    size(): number {
+    length(): number {
+        if (!this.root) return 0
         return this.sizeOfNode(this.root)
     }
 
@@ -83,12 +91,12 @@ export class BinarySearchTree<K extends Comparable, V extends Comparable> implem
 
     nodeRank(key: K, n?: BinarySearchTreeNode<K, V>): number {
         if (!n) return 0
-        
         const result = n.key?.compareTo(key)
-
-        if (result === 0)      return     this.sizeOfNode(n.left)
-        else if (result == -1) return     this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
-        else                                return 1 + this.sizeOfNode(n.left) + this.nodeRank(key, n.right)
+        if (result)
+            if      (result > 0) return                                this.nodeRank(key, n.left)
+            else if (result < 0) return  1 + this.sizeOfNode(n.left) + this.nodeRank(key, n.right)
+            else                 return      this.sizeOfNode(n.left)
+        return 0
     }
 
     keys(): Queue<K> {

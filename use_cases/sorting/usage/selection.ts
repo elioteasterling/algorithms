@@ -1,4 +1,4 @@
-import { Comparable } from 'contracts/data-structures'
+import { Comparable } from 'contracts/sort'
 import { partition } from '../sortHelper'
 import { knuthShuffle } from './shuffling'
 

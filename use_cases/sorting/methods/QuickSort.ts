@@ -1,5 +1,5 @@
-import { exchange } from 'Helpers/array-helper'
-import { Comparable } from 'contracts/data-structures'
+import { exchange } from 'helpers/array'
+import { Comparable } from 'contracts/sort'
 import { knuthShuffle } from '../usage/shuffling'
 import { insertionSort } from './InsertionSort'
 import { partition } from '../sortHelper'

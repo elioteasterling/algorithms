@@ -1,4 +1,4 @@
-import { exchange } from "Helpers/array-helper"
+import { exchange } from "helpers/array"
 
 // O(N) & in-place
 // - number of permutations = Math.factorial(L)

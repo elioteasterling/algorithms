@@ -1,4 +1,4 @@
-import { Comparable } from "contracts/data-structures"
+import { Comparable } from "contracts/sort"
 
 // container for key-value pairs
 export class SymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
