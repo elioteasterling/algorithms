@@ -40,7 +40,7 @@ function medianOf3(a: any[], lo: number, midish: number, hi: number) {
 //  - takes duplicates into account but...
 //  - only useful when there are only a few distinct keys
 
-function threeWayQuickSort(a: Comparable[], lo?: number, hi?: number) {
+export function threeWayQuickSort(a: Comparable[], lo?: number, hi?: number) {
     if (!lo) lo = 0
     if (!hi) hi = a.length
 

@@ -1,3 +1,3 @@
 export interface Comparable {
-    compareTo: (other: any) => number
+    compareTo: (other: Comparable) => -1 | 0 | 1
 }

@@ -6,12 +6,12 @@ export default class Node<T> {
 }
 
 // lower values on the left, higher on the right
-export class BinarySearchTreeNode<K, V> {
-    key?:   K
-    value?: V
-    left?:  BinarySearchTreeNode<K, V>
-    right?: BinarySearchTreeNode<K, V>
-    numberOfChildren = 0
+export class BSTNode<K, V> {
+    key?:    K
+    value?:  V
+    left?:   BSTNode<K, V>
+    right?:  BSTNode<K, V>
+    length = 0
 
     constructor(key?: K, value?: V) {
         this.key   = key

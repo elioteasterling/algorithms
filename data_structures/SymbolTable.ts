@@ -1,4 +1,5 @@
 import { Comparable } from "contracts/sort"
+import { BSTNode } from "./Node"
 
 // container for key-value pairs
 export class SymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
