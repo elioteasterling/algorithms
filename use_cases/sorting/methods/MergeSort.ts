@@ -10,9 +10,8 @@ import { insertionSort } from './InsertionSort.js'
        - N - 1 compares, 6N lg N array accesses
        - 3N lg N memory
 */
-export function mergeSort(unsorted: any[], immutable = true) {
+export function mergeSort(unsorted: any[]) {
     const sorted = sort(unsorted, [], 0, unsorted.length - 1)
-    if (immutable && sorted) return Array.from(sorted)
     return sorted
 }
 
