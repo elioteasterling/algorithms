@@ -3,7 +3,8 @@ import { Comparable   } from "contracts/sort"
 
 // container for key-value pairs
 export class SymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
-    
+    // a balanced  2-3 tree
+    // could use a 2-M tree instead (check out: B-Trees)
     tree = new RedBlackTree<K, V>()
 
     get length() { return this.tree.length }

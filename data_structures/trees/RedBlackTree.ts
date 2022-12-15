@@ -1,6 +1,7 @@
 import { Comparable } from './../../contracts/sort';
 import { Color, RedBlackNode } from 'data_structures/Node';
 import { Queue } from 'data_structures/Queue';
+import { quickSort } from 'use_cases/sorting/methods/QuickSort';
 /**
  *      invariants:
  *          - no node has two red links connected to it
@@ -29,14 +30,16 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
         }
         return undefined
     }
+
+    has(k: K) { return this.get(k) !== undefined }
     
-    min(startingFromNode?: RedBlackNode<K, V>) { return this.endValue("left", startingFromNode)  }
+    min(startingFromNode?: RedBlackNode<K, V>)   { return this.endValue("left", startingFromNode)  }
 
-    max(startingFromNode?: RedBlackNode<K, V>) { return this.endValue("right", startingFromNode) }
+    max(startingFromNode?: RedBlackNode<K, V>)   { return this.endValue("right", startingFromNode) }
 
-    private endValue(direction:    "left" | "right",    startingFromNode?:  RedBlackNode<K, V>) {
-        let n: RedBlackNode<K, V> | undefined = startingFromNode || this.root
-        while (n && n[direction]) n = n[direction]
+    private endValue(direction: "left" | "right",    startingFromNode?:  RedBlackNode<K, V>) {
+        let n: RedBlackNode<K, V>      | undefined = startingFromNode || this.root
+        while (n && n[direction])    n = n[direction]
         return n
     }
 
@@ -160,14 +163,14 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     }
 
     ascendingOrder(q: Queue<K | undefined>, n?: RedBlackNode<K, V>) {
-        if (n === undefined) return
+        if (n === undefined) return undefined
         this.ascendingOrder(q, n.left)
         q.enqueue(n.key)
         this.ascendingOrder(q, n.right)
     }
 
     decendingOrder(q: Queue<K | undefined>, n?: RedBlackNode<K, V>) {
-        if (n === undefined) return
+        if (n === undefined) return undefined
         this.decendingOrder(q, n.right)
         q.enqueue(n.key)
         this.decendingOrder(q, n.left)
@@ -238,4 +241,43 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
             n.right.color = Color.black     // part 2 of the 4-node split in 2-3 trees
         }
     }
+
+    // range func'ns
+    sizeBetween(lo: K, hi: K) {
+        if (this.has(lo)) return this.rank(hi) - this.rank(lo) + 1
+        return                   this.rank(hi) - this.rank(lo)
+    }
+
+    keysBetween(lo: K, hi: K) {
+        const result: K[] = []
+        let   n           = this.root,
+              q           = new Queue<K>()
+        this.ascendingOrder(q, n)
+        for (const key of q) {
+            if      (this.less(  key, lo)) continue
+            else if (this.bigger(key, hi)) break
+            result.push(key)
+        }
+        return result
+    }
+
+    valsBetween(lo: K, hi: K) {
+        const result: V[] = []
+        let   n           = this.root,
+              q           = new Queue<K | undefined>()
+        this.ascendingOrder(q, n)
+        for (const v of q) {
+            if (v === undefined ) continue
+            else if (this.vBigger(this.get(hi), this.get(lo))) break
+            result.map((x) => result.push(x))
+        }
+        return result
+    }
+
+    less(  k: K, lo: K):       boolean { return k.compareTo(lo) < 0 }
+    bigger(k: K, hi: K):       boolean { return k.compareTo(hi) > 0 }
+
+    vLess(  v?: V, other?: V): boolean { return v !== undefined && other !== undefined && v.compareTo(other) < 0 }
+    vBigger(v?: V, other?: V): boolean { return v !== undefined && other !== undefined && v.compareTo(other) > 0 }
 }
+
