@@ -1,59 +1,44 @@
-import { Comparable } from "contracts/sort"
-import { BSTNode } from "./Node"
+import { RedBlackTree } from './trees/RedBlackTree'
+import { Comparable   } from "contracts/sort"
 
 // container for key-value pairs
 export class SymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
-    keys: Record<string, K> = {}
-    vals: Record<string, V> = {}
+    
+    tree = new RedBlackTree<K, V>()
 
-    get length() {
-        return Object.keys(this.keys).length
-    }
+    get length() { return this.tree.length }
 
-    put(k: K, v?: V) {
+    add(k: K, v?: V) {
         if (!v) return this.del(k)
-        const h = this.hashedKey(k)
-        this.keys[h] = k
-        this.vals[h] = v
+        this.tree.put(k, v)
     }                         // same key => overides value
-    get(k: K): V | undefined  { return this.vals[this.hashedKey(k)] }    // returns val || undefined if nonexistent
+    get(k: K): V | undefined  { return this.tree.get(k) }    // returns val || undefined if nonexistent
     // lazy delete => let gc handle it
-    del(k: K)               { this.put(k) }
-    has(k: K)               { return this.get(k) !== undefined }
-    isEmpty(): boolean      { return this.size() > 0 }
-    size(): number          { return 0 }
+    del(k: K)               { return this.tree.del(k) }
+    has(k: K)               { return this.tree.get(k) !== undefined }
+    isEmpty(): boolean      { return this.tree.length() > 0 }
+    size(): number          { return this.length() }
     greaterThan(k: K, v: V): boolean  {
-        const h = this.hashedKey(k)
-        if (this.vals[h] === undefined) return false
-        else if (v === undefined)       return true
-        else if (this.vals[h])          return this.vals[h].compareTo(v) > 0
+        const result = this.tree.get(k)
+        if      (result === undefined) return false
+        else if (v      === undefined) return true
+        else if (result !== undefined) return result.compareTo(v) > 0
         return false
     }
 
-    hashedKey(k: K): string { return JSON.stringify(k) }
-
-    *[Symbol.iterator](): Iterator<V> {
-        for (const v of Object.values(this.vals))
-            if (v !== undefined) yield v
-    }
+    * [Symbol.iterator](): Iterator<V> { for (const v of this.tree) if (v !== undefined) yield v }
 }
 
 export class OrderedSymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
-    keys: Record<string, K> = {}
-    vals: Record<string, V | undefined> = {}
 
-    put(k: K, v?: V) {
-        if (!v) return undefined
-        const h = this.hashCodeFor(k)
-        this.keys[h] = k
-        this.vals[h] = v
-    }                         // same key => overides value
-    get(k: K): V | undefined  { return this.vals[this.hashCodeFor(k)] }    // returns val || undefined if nonexistent
-    // lazy delete => let gc handle it
-    del(k: K)               { this.put(k) }
-    has(k: K)               { return this.get(k) !== undefined }
-    isEmpty(): boolean      { return this.size() > 0 }
-    size(): number          { return 0 }
+    tree = new RedBlackTree<K, V>()
+
+    put(k: K,  v?: V)        { if (v) this.tree.put(k, v) } // same key    => overide current value
+    get(k: K): V | undefined { return this.tree.get(k) }
+    del(k: K)                { this.put(k) }                // lazy delete => let gc handle it
+    has(k: K)                { return this.get(k) !== undefined }
+    isEmpty(): boolean       { return this.size() > 0 }
+    size():    number        { return 0 }
     greaterThan(k: K, v: V): boolean {
         const possibleValue: V | undefined = this.get(k)
         return !!possibleValue && possibleValue.compareTo(v) > 0
@@ -70,8 +55,5 @@ export class OrderedSymbolTable<K extends Comparable, V extends Comparable> impl
 
     hashCodeFor(k: K): string { return JSON.stringify(k) }
 
-    *[Symbol.iterator](): Iterator<V> {
-        for (const v of Object.values(this.vals))
-            if (v !== undefined) yield v
-    }
+    *[Symbol.iterator](): Iterator<V> { for (const v of this.tree) if (v !== undefined) yield v }
 }

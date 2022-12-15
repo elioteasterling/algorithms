@@ -51,7 +51,7 @@ export class BST<K extends Comparable, V extends Comparable> implements Iterable
                 n!.right = this.delMin(t.right)
                 n!.left  = t.left
             }
-            n!.length = this.sizeOfNode(n!.left) + this.sizeOfNode(n!.right) + 1
+            n!.children = this.sizeOfNode(n!.left) + this.sizeOfNode(n!.right) + 1
             return n
         }
         
@@ -65,7 +65,7 @@ export class BST<K extends Comparable, V extends Comparable> implements Iterable
 
         if (n.left === undefined) return n.right
         n.left = this.delMin(n.left)
-        n.length = this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
+        n.children = this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
         return n
     }
 
@@ -77,7 +77,7 @@ export class BST<K extends Comparable, V extends Comparable> implements Iterable
 
         if (n.right === undefined) return n.left
         n.right = this.delMax(n.right)
-        n.length = 1 + this.sizeOfNode(n.right) + this.sizeOfNode(n.left)
+        n.children = 1 + this.sizeOfNode(n.right) + this.sizeOfNode(n.left)
         return n
     }
 
@@ -89,7 +89,7 @@ export class BST<K extends Comparable, V extends Comparable> implements Iterable
         else if (result === -1) n.left  = this.insert(key, val, n.left  || new BSTNode())
         else                    n.value = val
 
-        n.length = this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
+        n.children = this.sizeOfNode(n.left) + this.sizeOfNode(n.right)
         return n
     }
 
@@ -130,7 +130,7 @@ export class BST<K extends Comparable, V extends Comparable> implements Iterable
 
     private sizeOfNode(n?: BSTNode<K, V>): number {
         if (!n) return 0
-        return n.length
+        return n.children
     }
 
     rank(key: K): number { return this.nodeRank(key, this.root) }

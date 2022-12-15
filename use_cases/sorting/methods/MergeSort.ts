@@ -1,3 +1,4 @@
+import { Comparable }    from 'contracts/sort'
 import { insertionSort } from './InsertionSort.js'
 
 /*  MERGE SORT
@@ -10,14 +11,14 @@ import { insertionSort } from './InsertionSort.js'
        - N - 1 compares, 6N lg N array accesses
        - 3N lg N memory
 */
-export function mergeSort(unsorted: any[]) {
+export function mergeSort(unsorted: Comparable[]) {
     const sorted = sort(unsorted, [], 0, unsorted.length - 1)
     return sorted
 }
 
-function merge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number) {
+function merge(unsorted: Comparable[], aux: Comparable[], lo: number, mid: number, hi: number) {
 
-    for (let i = lo; i <= hi; i++)  aux[i] = unsorted[i]     // copy
+    for (let i = lo; i <= hi; i++)  aux[i] = unsorted[i]     // keep a copy of all elements between lo & hi
 
     let i = lo, j = mid + 1
     for (let k = lo; k <= hi; k++) {
@@ -29,9 +30,9 @@ function merge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number)
 }
 
 const CUTOFF = 8
-function sort(unsorted: any[], aux: any[], lo: number, hi: number) {
+function sort(unsorted: Comparable[], aux: Comparable[], lo: number, hi: number) {
 
-    if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted)
+    if (hi < lo + CUTOFF) return insertionSort(unsorted)
     
     const mid = lo + Math.floor((hi - lo) / 2)
     sort(unsorted, aux, lo, mid)
@@ -45,15 +46,15 @@ function sort(unsorted: any[], aux: any[], lo: number, hi: number) {
         - takes up more memory than merge sort
         - removes the copy time for each merge
 */
-export function fastMergeSort(unsorted: any[], immutable = true) {
-    let aux: Array<any> = []
+export function fastMergeSort(unsorted: Comparable[], immutable = true) {
+    let aux: Array<Comparable> = []
     for (let i = 0; i < unsorted.length; i++) aux[i] = unsorted[i]  // copy
     const sorted = fastSort(unsorted, [], 0, unsorted.length - 1)
     if (immutable && sorted) return Array.from(sorted)
     return sorted
 }
 
-function fastMerge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number) {
+function fastMerge(unsorted: Comparable[], aux: Comparable[], lo: number, mid: number, hi: number) {
     let i = lo, j = mid + 1
     for (let k = lo; k <= hi; k++) {
         if (i > mid)                aux[k] = unsorted[j++]          // merge
@@ -63,7 +64,7 @@ function fastMerge(unsorted: any[], aux: any[], lo: number, mid: number, hi: num
     }
 }
 
-function fastSort(aux: any[], unsorted: any[], lo: number, hi: number) {
+function fastSort(aux: Comparable[], unsorted: Comparable[], lo: number, hi: number) {
 
     if (hi <= lo + CUTOFF - 1) return insertionSort(unsorted)
     let sorted = aux
@@ -81,14 +82,14 @@ function fastSort(aux: any[], unsorted: any[], lo: number, hi: number) {
         - takes up more memory
         - removes recursivity - industrial grade perf
 */
-export function bottomUpMergeSort(unsorted: any[]) {
-    let aux: any[] = []
+export function bottomUpMergeSort(unsorted: Comparable[]) {
+    let aux: Comparable[] = []
     for (let i = 0; i < unsorted.length; i++) aux[i] = unsorted[i]      // copy
     const sorted = bottomUpSort(unsorted, aux)
     return sorted
 }
 
-function bottomUpMerge(unsorted: any[], aux: any[], lo: number, mid: number, hi: number) {
+function bottomUpMerge(unsorted: Comparable[], aux: Comparable[], lo: number, mid: number, hi: number) {
     let i = lo, j = mid + 1
     for (let k = lo; k <= hi; k++) {
         if (i > mid)                aux[k] = unsorted[j++]              // merge
@@ -98,7 +99,7 @@ function bottomUpMerge(unsorted: any[], aux: any[], lo: number, mid: number, hi:
     }
 }
 
-function bottomUpSort(unsorted: any[], aux: any[]) {
+function bottomUpSort(unsorted: Comparable[], aux: Comparable[]) {
     let n = unsorted.length
     for (let size = 1; size < n; size = size + size)
         for (let lo = 0; lo < n - size; lo += size + size)

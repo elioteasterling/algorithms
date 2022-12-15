@@ -11,10 +11,35 @@ export class BSTNode<K, V> {
     value?:  V
     left?:   BSTNode<K, V>
     right?:  BSTNode<K, V>
-    length = 0
+    children = 0
 
     constructor(key?: K, value?: V) {
         this.key   = key
         this.value = value
+    }
+}
+
+export enum Color {
+    gray,
+    red,
+    black
+}
+
+export class RedBlackNode<K, V> {
+    children : number = 0
+    color    : Color  = Color.gray
+    key    ? : K
+    value  ? : V
+    left   ? : RedBlackNode<K, V>
+    right  ? : RedBlackNode<K, V>
+
+    constructor(key?: K, value?: V, color: Color = Color.red) {
+        this.key   = key
+        this.value = value
+        this.color = color
+    }
+
+    isRed() {
+        return this.color === Color.red
     }
 }
