@@ -1,12 +1,23 @@
-export default class Node<T> {
+import { Valuable } from '../contracts/generic';
+import { Comparable } from 'contracts/sort'
+
+// --------------------------------------------------- List / Stack / Queue
+export class Node<T extends Comparable> implements Comparable, Valuable {
     value?: T
-    next?:  Node<T>
-    prev?:  Node<T>
-    constructor(t:  T) { if (t) this.value = t }
+    right?: Node<T>
+    left?:  Node<T>
+    
+    constructor(val?: T) { if (val) this.value = val }
+
+    compareTo(other: Node<T>) {
+        if (this.value  === undefined) return -1
+        if (other.value === undefined) return  1
+        return other.value.compareTo(this.value)
+    }
 }
 
-// lower values on the left, higher on the right
-export class BSTNode<K, V> {
+// ----------------------------------------------------- Binary Search Tree
+export class BSTNode<K, V> implements Valuable {
     key?:    K
     value?:  V
     left?:   BSTNode<K, V>
@@ -19,27 +30,56 @@ export class BSTNode<K, V> {
     }
 }
 
+// --------------------------------------------------------- Red Black Tree
 export enum Color {
-    gray,
     red,
     black
 }
 
-export class RedBlackNode<K, V> {
+export class RedBlackNode<K, V> implements Valuable {
     children : number = 0
-    color    : Color  = Color.gray
+    color    : Color  = Color.black
     key    ? : K
     value  ? : V
     left   ? : RedBlackNode<K, V>
     right  ? : RedBlackNode<K, V>
 
-    constructor(key?: K, value?: V, color: Color = Color.red) {
+    constructor(key?: K, value?: V, color: Color = Color.black) {
         this.key   = key
         this.value = value
         this.color = color
     }
 
-    isRed() {
-        return this.color === Color.red
+    get isRed() { return this.color === Color.red }
+}
+
+// ------------------------------------------------ K Nearest Neighbor Tree (INCOMPLETE !!!)
+export class KdNode<K extends Comparable, V extends Comparable> implements Comparable, Valuable {
+    children : number = 0
+    key    ? : K
+    value  ? : V
+    left   ? : KdNode<K, V>
+    right  ? : KdNode<K, V>
+    dim      : number
+
+    constructor(key?: K, value?: V, dim: number = 1) {
+        this.key   = key
+        this.value = value
+        this.dim   = dim
     }
+
+    compareTo(other: Comparable) {
+        if      (!this.value) return -1
+        else if (!other)      return  1
+        return other.compareTo(this.value)
+    }
+
+     distance(n: KdNode<K, V>) {
+        const d: number = 0
+        for (let a = 0; a < (this.dim || 0); a++) {     // for each dimension
+            for (let dimention = a; a < this.dim; a++) {
+
+            }
+        }
+     }
 }

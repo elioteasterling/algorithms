@@ -1,7 +1,8 @@
-import Node from "./Node"
+import { Comparable } from 'contracts/sort';
+import { Node } from "./Node"
 
-export default class List<T> {
-    size = 0
+export class List<T extends Comparable> {
+    length = 0
     head?: Node<T>
     tail?: Node<T>
 
@@ -13,9 +14,9 @@ export default class List<T> {
     // "for of" impl
     * [Symbol.iterator]() {
         let h: Node<T> = (this.head as Node<T>)
-        while (h.next) {
+        while (h.right) {
             const v = h.value
-            h = h.next
+            h = h.right
             yield v
         }
     }
@@ -23,58 +24,58 @@ export default class List<T> {
     clear() {
         if (this.head) this.head = undefined
         if (this.tail) this.tail = undefined
-        this.size = 0
+        this.length = 0
     }
 
     connect(n1: Node<T>, n2: Node<T>) {
-        n1.next = n2
-        n2.prev = n1
+        n1.right = n2
+        n2.left = n1
     }
 
     addFront(value: T) {
         const node: Node<T> = new Node(value)
-        if (this.size === 0) this.tail = node
+        if (this.length === 0) this.tail = node
         else if (this.head) this.connect(node, this.head)
         this.head = node
-        return ++this.size
+        return ++this.length
     }
 
     addBack(value: T) {
         const node: Node<T> = new Node(value)
-        if (this.size === 0) this.head = node
+        if (this.length === 0) this.head = node
         else if (this.tail) this.connect(this.tail, node)
         this.tail = node
-        return ++this.size
+        return ++this.length
     }
 
     removeFront() {
         if (!this.head) return undefined
         const original = this.head
-        if (this.size === 1) {
+        if (this.length === 1) {
             const value = this.head.value
             this.clear()
             return value
         }
-        else if (this.head?.prev && original?.next) {
-            this.head = original.next
-            this.head.prev = undefined
-            this.size--
+        else if (this.head?.left && original?.right) {
+            this.head = original.right
+            this.head.left = undefined
+            this.length--
         }
         return original.value
     }
 
     removeBack() {
         const original: any = this.tail
-        if (this.size === 0) return undefined
-        else if (this.size === 1) {
+        if (this.length === 0) return undefined
+        else if (this.length === 1) {
             const value = original.value
             this.clear()
             return value
         }
         else {
-            this.tail = original?.prev || undefined
-            if  (this.tail?.next) this.tail.next = undefined
-            this.size--
+            this.tail = original?.left || undefined
+            if  (this.tail?.right) this.tail.right = undefined
+            this.length--
         }
         return original.value
     }

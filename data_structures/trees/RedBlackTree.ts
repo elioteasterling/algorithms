@@ -1,8 +1,7 @@
-import { Comparable } from './../../contracts/sort';
-import { Color, RedBlackNode } from 'data_structures/Node';
-import { Queue } from 'data_structures/Queue';
-import { quickSort } from 'use_cases/sorting/methods/QuickSort';
-/**
+import { Comparable } from './../../contracts/sort'
+import { Color, RedBlackNode } from 'data_structures/Node'
+import { Queue } from 'data_structures/Queue'
+/**f
  *      invariants:
  *          - no node has two red links connected to it
  *          - red links lean left
@@ -45,9 +44,9 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
 
     del(k: K) { this.root = this.delete(k, this.root!) || new RedBlackNode<K, V>() }
 
-    // hibbard deletion - asymetrical => symetry degrades over time
+    // hibbard deletion - asymetrical => symmetry degrades over time
     delete(k: K, n?: RedBlackNode<K, V>) {
-        if (!n || !n.key) return
+        if (!n?.key) return
         else {
             let result = n.key.compareTo(k)
             if      (result < 0) n.left  = this.delete(k, n.left)
@@ -123,7 +122,7 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
         return n
     }
 
-    length(): number {
+    get length(): number {
         if (!this.root) return 0
         return this.sizeOfNode(this.root)
     }
@@ -188,7 +187,7 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     }
 
     private rotateLeft(n: RedBlackNode<K, V>) {     // maintains symmetric order and perfect black balance
-        if (n.right?.isRed()) {
+        if (n.right?.isRed) {
             const r = n.right
             n.right = r.left
             r.left  = n
@@ -213,16 +212,16 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
         else if (result === -1)                         n.left  = this.insert(k, v, n.left  || new RedBlackNode<K, V>())
         else                                            n.value = v
 
-        if (n.right?.isRed() && !n.left?.isRed())       n = this.rotateLeft(n)
-        if ( n.left?.isRed() &&  n.left?.left?.isRed()) n = this.rotateRight(n)
-        if ( n.left?.isRed() &&  n.right?.isRed())          this.flipColors(n)
+        if (n.right?.isRed && !n.left?.isRed)       n = this.rotateLeft(n)
+        if (n.left?.isRed  &&  n.left?.left?.isRed) n = this.rotateRight(n)
+        if (n.left?.isRed  &&  n.right?.isRed)          this.flipColors(n)
 
         return n
     }
 
     // temporary right-leaning, red link
     private rotateRight(n: RedBlackNode<K, V>) {     // maintains symmetric order and perfect black balance
-        if (n.left?.isRed()) {
+        if (n.left?.isRed) {
             const l    = n.left
             n.left     = l.right
             l.right    = n
@@ -235,7 +234,7 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     }
 
     private flipColors(n: RedBlackNode<K, V>) {
-        if (!n.isRed() && n.left?.isRed() && n.right?.isRed()) {
+        if (!n.isRed && n.left?.isRed && n.right?.isRed) {
             n.color       = Color.red
             n.left.color  = Color.black     // part 1 of the 4-node split in 2-3 trees
             n.right.color = Color.black     // part 2 of the 4-node split in 2-3 trees
@@ -243,41 +242,42 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     }
 
     // range func'ns
-    sizeBetween(lo: K, hi: K) {
-        if (this.has(lo)) return this.rank(hi) - this.rank(lo) + 1
+    rangeSize(lo: K, hi: K) {
+        if (this.has(hi)) return this.rank(hi) - this.rank(lo) + 1
         return                   this.rank(hi) - this.rank(lo)
     }
 
-    keysBetween(lo: K, hi: K) {
+    keyRange(lo: K, hi: K) {
         const result: K[] = []
         let   n           = this.root,
               q           = new Queue<K>()
         this.ascendingOrder(q, n)
         for (const key of q) {
-            if      (this.less(  key, lo)) continue
-            else if (this.bigger(key, hi)) break
+            if      (this.lesserKey(key, lo)) continue
+            else if (this.biggerKey(key, hi)) break
             result.push(key)
         }
         return result
     }
 
-    valsBetween(lo: K, hi: K) {
+    valRange (lo: K, hi: K) {
         const result: V[] = []
         let   n           = this.root,
-              q           = new Queue<K | undefined>()
+              q           = new Queue<K | undefined>(),
+              hiVal       = this.get(hi),
+              loVal       = this.get(lo)
         this.ascendingOrder(q, n)
         for (const v of q) {
-            if (v === undefined ) continue
-            else if (this.vBigger(this.get(hi), this.get(lo))) break
-            result.map((x) => result.push(x))
+            if      (!v)                             continue
+            else if (this.biggerValue(hiVal, loVal)) break
+            result.map((x) => x && result.push(x))
         }
         return result
     }
 
-    less(  k: K, lo: K):       boolean { return k.compareTo(lo) < 0 }
-    bigger(k: K, hi: K):       boolean { return k.compareTo(hi) > 0 }
-
-    vLess(  v?: V, other?: V): boolean { return v !== undefined && other !== undefined && v.compareTo(other) < 0 }
-    vBigger(v?: V, other?: V): boolean { return v !== undefined && other !== undefined && v.compareTo(other) > 0 }
+    private lesserKey(  k: K, lo: K):   boolean { return k !== undefined && lo !== undefined && k.compareTo(lo) < 0 }
+    private biggerKey(  k: K, hi: K):   boolean { return k !== undefined && hi !== undefined && k.compareTo(hi) > 0 }
+    //private lesserValue(v?: V, lo?: V): boolean { return v !== undefined && lo !== undefined && v.compareTo(lo) < 0 }
+    private biggerValue(v?: V, hi?: V): boolean { return v !== undefined && hi !== undefined && v.compareTo(hi) > 0 }
 }
 
