@@ -1,4 +1,4 @@
-import { Stack } from "../data_structures/Stack"
+import { ArrayStack as Stack } from "../data_structures/Stack"
 
 export const evaluate = (exp: string) => {
     const values    = new Stack()
@@ -7,13 +7,13 @@ export const evaluate = (exp: string) => {
     for (const c of exp) {
         if (c === "(") continue
         const possibleValue = parseFloat(c)
-        if (possibleValue !== NaN) values.push(possibleValue)
+        if (!Number.isNaN(possibleValue)) values.push(possibleValue)
         else if (c !== ")") operators.push(c)
         else {
             const op = operators.pop()
             const v1 = values.pop()
             const v2 = values.pop()
-            const result = performOperation(op, v1, v2)
+            const result = performOperation((op as string), parseInt(v1 as string), parseInt(v2 as string))
             values.push(result)
         }
     }

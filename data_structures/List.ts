@@ -13,12 +13,13 @@ export class List<T extends Comparable> {
 
     // "for of" impl
     * [Symbol.iterator]() {
-        let h: Node<T> = (this.head as Node<T>)
-        while (h.right) {
+        let h = this.head
+        while (h !== undefined) {
             const v = h.value
             h = h.right
             yield v
         }
+        console.log('hello')
     }
 
     clear() {
@@ -28,24 +29,45 @@ export class List<T extends Comparable> {
     }
 
     connect(n1: Node<T>, n2: Node<T>) {
+        console.log(n1)
+        console.log(n2)
         n1.right = n2
-        n2.left = n1
+        n2.left  = n1
+        console.log(n1)
+        console.log(n2)
     }
 
     addFront(value: T) {
         const node: Node<T> = new Node(value)
-        if (this.length === 0) this.tail = node
-        else if (this.head) this.connect(node, this.head)
-        this.head = node
+        if (!this.head || !this.tail) this.handleHeadAndTailAdds(node, false)
+        else {
+            this.connect(node, this.head)
+            this.head = node
+        }
         return ++this.length
     }
 
     addBack(value: T) {
         const node: Node<T> = new Node(value)
-        if (this.length === 0) this.head = node
-        else if (this.tail) this.connect(this.tail, node)
-        this.tail = node
+        if (!this.head || !this.tail) this.handleHeadAndTailAdds(node)
+        else {
+            this.connect(this.tail, node)
+            this.tail = node
+        }
         return ++this.length
+    }
+
+    handleHeadAndTailAdds(node: Node<T>, addBack = true) {
+        if (this.head === undefined) this.head = node
+        else if (this.tail === undefined) {
+            if (addBack) {
+                this.tail = node
+            } else {
+                this.tail = this.head
+                this.head = node
+            }
+            this.connect(this.head, this.tail)
+        }
     }
 
     removeFront() {

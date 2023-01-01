@@ -1,13 +1,12 @@
-import { Valuable } from '../contracts/generic';
-import { Comparable } from 'contracts/sort'
+import { Valuable, Comparable } from '../contracts'
 
 // --------------------------------------------------- List / Stack / Queue
 export class Node<T extends Comparable> implements Comparable, Valuable {
-    value?: T
-    right?: Node<T>
-    left?:  Node<T>
+    value?: T       = undefined
+    right?: Node<T> = undefined
+    left?:  Node<T> = undefined
     
-    constructor(val?: T) { if (val) this.value = val }
+    constructor(val?: T) { this.value = val }
 
     compareTo(other: Node<T>) {
         if (this.value  === undefined) return -1
@@ -50,7 +49,7 @@ export class RedBlackNode<K, V> implements Valuable {
         this.color = color
     }
 
-    get isRed() { return this.color === Color.red }
+    isRed() { return this.color === Color.red }
 }
 
 // ------------------------------------------------ K Nearest Neighbor Tree (INCOMPLETE !!!)

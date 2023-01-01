@@ -1,7 +1,7 @@
 import { Comparable } from './../../contracts/sort'
 import { Color, RedBlackNode } from 'data_structures/Node'
 import { Queue } from 'data_structures/Queue'
-/**f
+/**
  *      invariants:
  *          - no node has two red links connected to it
  *          - red links lean left
@@ -45,7 +45,7 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     del(k: K) { this.root = this.delete(k, this.root!) || new RedBlackNode<K, V>() }
 
     // hibbard deletion - asymetrical => symmetry degrades over time
-    delete(k: K, n?: RedBlackNode<K, V>) {
+    private delete(k: K, n?: RedBlackNode<K, V>) {
         if (!n?.key) return
         else {
             let result = n.key.compareTo(k)
@@ -161,23 +161,23 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
         return v
     }
 
-    ascendingOrder(q: Queue<K | undefined>, n?: RedBlackNode<K, V>) {
+    ascendingOrder(q: Queue<K>, n?: RedBlackNode<K, V>) {
         if (n === undefined) return undefined
         this.ascendingOrder(q, n.left)
-        q.enqueue(n.key)
+        if(n.key !== undefined) q.enqueue(n.key)
         this.ascendingOrder(q, n.right)
     }
 
-    decendingOrder(q: Queue<K | undefined>, n?: RedBlackNode<K, V>) {
+    decendingOrder(q: Queue<K>, n?: RedBlackNode<K, V>) {
         if (n === undefined) return undefined
         this.decendingOrder(q, n.right)
-        q.enqueue(n.key)
+        if(n.key !== undefined) q.enqueue(n.key)
         this.decendingOrder(q, n.left)
     }
 
     * [Symbol.iterator](): Iterator<V> {
         let val: V | undefined
-        const queue = new Queue<K | undefined>()
+        const queue = new Queue<K>()
         this.ascendingOrder(queue, this.root)
         for (const key of queue) {
             if (key === undefined) continue
@@ -187,7 +187,7 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     }
 
     private rotateLeft(n: RedBlackNode<K, V>) {     // maintains symmetric order and perfect black balance
-        if (n.right?.isRed) {
+        if (n.right?.isRed()) {
             const r = n.right
             n.right = r.left
             r.left  = n
@@ -212,16 +212,16 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
         else if (result === -1)                         n.left  = this.insert(k, v, n.left  || new RedBlackNode<K, V>())
         else                                            n.value = v
 
-        if (n.right?.isRed && !n.left?.isRed)       n = this.rotateLeft(n)
-        if (n.left?.isRed  &&  n.left?.left?.isRed) n = this.rotateRight(n)
-        if (n.left?.isRed  &&  n.right?.isRed)          this.flipColors(n)
+        if (n.right?.isRed() && !n.left?.isRed())       n = this.rotateLeft(n)
+        if (n.left?.isRed()  &&  n.left?.left?.isRed()) n = this.rotateRight(n)
+        if (n.left?.isRed()  &&  n.right?.isRed())          this.flipColors(n)
 
         return n
     }
 
     // temporary right-leaning, red link
     private rotateRight(n: RedBlackNode<K, V>) {     // maintains symmetric order and perfect black balance
-        if (n.left?.isRed) {
+        if (n.left?.isRed()) {
             const l    = n.left
             n.left     = l.right
             l.right    = n
@@ -234,14 +234,16 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     }
 
     private flipColors(n: RedBlackNode<K, V>) {
-        if (!n.isRed && n.left?.isRed && n.right?.isRed) {
+        if (!n.isRed() && n.left?.isRed() && n.right?.isRed()) {
             n.color       = Color.red
             n.left.color  = Color.black     // part 1 of the 4-node split in 2-3 trees
             n.right.color = Color.black     // part 2 of the 4-node split in 2-3 trees
         }
     }
 
-    // range func'ns
+    // --------------------------------- 1D range searches ---------------------------------
+
+    // corresponds to size(K lo, K hi) in course
     rangeSize(lo: K, hi: K) {
         if (this.has(hi)) return this.rank(hi) - this.rank(lo) + 1
         return                   this.rank(hi) - this.rank(lo)
@@ -263,7 +265,7 @@ export class RedBlackTree<K extends Comparable, V extends Comparable> implements
     valRange (lo: K, hi: K) {
         const result: V[] = []
         let   n           = this.root,
-              q           = new Queue<K | undefined>(),
+              q           = new Queue<K>(),
               hiVal       = this.get(hi),
               loVal       = this.get(lo)
         this.ascendingOrder(q, n)

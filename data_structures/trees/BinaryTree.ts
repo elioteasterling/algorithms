@@ -4,7 +4,7 @@ import { Queue } from "../Queue"
 
 // equivocal to quick sort
 // use a Red/Black tree for solving asymetry - better for symbol table
-export class BST<K extends Comparable, V extends Comparable> implements Iterable<K | undefined> {
+export class BST<K extends Comparable, V extends Comparable> implements Iterable<K> {
     
     root = new BSTNode<K, V>()
 
@@ -162,22 +162,22 @@ export class BST<K extends Comparable, V extends Comparable> implements Iterable
         return v
     }
 
-    ascendingOrder(q: Queue<K | undefined>, n?: BSTNode<K, V>) {
+    ascendingOrder(q: Queue<K>, n?: BSTNode<K, V>) {
         if (n === undefined) return
         this.ascendingOrder(q, n.left)
-        q.enqueue(n.key)
+        if(n.key !== undefined) q.enqueue(n.key)
         this.ascendingOrder(q, n.right)
     }
 
-    decendingOrder(q: Queue<K | undefined>, n?: BSTNode<K, V>) {
+    decendingOrder(q: Queue<K>, n?: BSTNode<K, V>) {
         if (n === undefined) return
         this.decendingOrder(q, n.right)
-        q.enqueue(n.key)
+        if(n.key !== undefined) q.enqueue(n.key)
         this.decendingOrder(q, n.left)
     }
 
-    * [Symbol.iterator](): Iterator<K | undefined> {
-        const queue = new Queue<K | undefined>()
+    * [Symbol.iterator](): Iterator<K> {
+        const queue = new Queue<K>()
         this.ascendingOrder(queue, this.root)
         for (const key of queue) {
             if (key !== undefined) yield key

@@ -24,7 +24,7 @@ class Point implements Comparable, Point_2d {
         return 0
     }
 
-    compareTo(p: Point): number {
+    compareTo(p: Point): 0 | 1 | -1 {
         if (this.y > p.y)
             if      (this.polarOrder() > p.polarOrder()) return  1
             else if (this.polarOrder() < p.polarOrder()) return -1
@@ -53,14 +53,14 @@ function ccw(a: Point | undefined, b: Point | undefined, c: Point): number {
 // NlogN sorting time, linear otherwise
 export function grahamScan(p: Point[]) {
     const L = p.length
-    let hull: Stack<Point | undefined> = new Stack<Point>()
+    let hull: Stack<Point> = new Stack<Point>()
 
     mergeSort(p)    // Point[] gets sorted because Point or any other class must implement Comparable
 
     for (let i = 2; i < L; i++) {
         let top = hull.pop()
         while (ccw(hull.peek(), top, p[i]) < 1) top = hull.pop()
-        hull.push(top)
+        hull.push(top!)
         hull.push(p[i])
     }
     // find the lowest y coordinate point p

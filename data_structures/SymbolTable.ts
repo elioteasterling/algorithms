@@ -17,8 +17,8 @@ export class SymbolTable<K extends Comparable, V extends Comparable> implements 
     // lazy delete => let gc handle it
     del(k: K)               { return this.tree.del(k) }
     has(k: K)               { return this.tree.get(k) !== undefined }
-    isEmpty(): boolean      { return this.tree.length() > 0 }
-    size(): number          { return this.length() }
+    isEmpty(): boolean      { return this.tree.length > 0 }
+    size(): number          { return this.length }
     greaterThan(k: K, v: V): boolean  {
         const result = this.tree.get(k)
         if      (result === undefined) return false
@@ -30,6 +30,19 @@ export class SymbolTable<K extends Comparable, V extends Comparable> implements 
     * [Symbol.iterator](): Iterator<V> { for (const v of this.tree) if (v !== undefined) yield v }
 }
 
+/** 
+ * **** On Ordered Symbol Tables ****
+ * 
+ *      1D Range Search (1D == 1 Key)
+ *          - insert k,v pair
+ *          - search for k
+ *          - delete k
+ *          - range search: find  all keys between k1 & k2
+ *          - range count:  number of keys between k1 & k2
+ * 
+ *      e.g., Database queries
+ *            Count points on a line (1d interval)
+ */
 export class OrderedSymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
 
     tree = new RedBlackTree<K, V>()

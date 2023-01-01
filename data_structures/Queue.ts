@@ -1,9 +1,9 @@
 import { Comparable } from 'contracts/sort'
 import { BinaryHeap } from './Heap'
-import List from "./List"
+import {List} from "./List"
 
 // constant time for all ops other than "for of"
-export class Queue<T> implements Iterable<T> {
+export class Queue<T extends Comparable> implements Iterable<T> {
 
     list = new List<T>()
 
@@ -11,14 +11,14 @@ export class Queue<T> implements Iterable<T> {
 
     dequeue() { return this.list.removeBack() }
 
-    isEmpty() { return this.list.size === 0 }
+    isEmpty() { return this.list.length === 0 }
 
     // "for of" impl
     * [Symbol.iterator](): Iterator<T, any, undefined> {
         let h = this.list.head
-        while (h?.next) {
+        while (h?.right) {
             let v = h.value
-            h = h.next
+            h = h.right
             if (v === undefined) continue
             yield v
         }
