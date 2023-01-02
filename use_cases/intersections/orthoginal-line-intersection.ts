@@ -1,7 +1,6 @@
-import { Valuable } from './../../contracts/generic'
-import { Comparable } from 'contracts/sort'
+import { Comparable, Valuable } from 'contracts'
 import { RedBlackTree } from 'data_structures/trees/RedBlackTree'
-import { Line, Point } from '../../models/geometry'
+import { Line, Point } from 'models'
 
 /**
  *  Orthogonal Line Intersection Requirements:
@@ -57,7 +56,7 @@ export class LineIntersectionDetector {
 
 /**
  *  2D orthogonal line search
- *      Grid Implementation:
+ *      Grid Implementation:    (m x m)
  *      - space:     n + m^2
  *      - time: (1 + n / m^2) * (# of squares examined)
  * 

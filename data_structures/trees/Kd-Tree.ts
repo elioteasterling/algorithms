@@ -1,5 +1,5 @@
 import { Comparable } from "contracts/sort";
-import { Point } from "models/geometry";
+import { Point } from "models/line";
 import { BST } from "./BinaryTree"
 
 /** **************** 2d Range Search ****************
