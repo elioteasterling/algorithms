@@ -22,10 +22,7 @@ l.addBack(num(8))
 l.addBack(num(9))
  
 let result = ""
-for (const n of l) {
-    console.log(n)
-    result += (n as any).value
-}
+for (const n of l) { result += (n as any).value }
 
 describe('List Tests', () => {
     test('Check the iterability of the list class', () => {
