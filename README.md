@@ -1,2 +1,2 @@
 # algorithms
-js implementations
+js implementations and examples
