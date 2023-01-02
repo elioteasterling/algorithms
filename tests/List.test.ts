@@ -20,8 +20,6 @@ l.addBack(num(6))
 l.addBack(num(7))
 l.addBack(num(8))
 l.addBack(num(9))
-
-console.log(l)
  
 let result = ""
 for (const n of l) {

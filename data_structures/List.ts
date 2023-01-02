@@ -14,11 +14,11 @@ export class List<T extends Comparable> {
     // "for of" impl
     * [Symbol.iterator]() {
         let h = this.head
-        while (h !== undefined) {
-            const v = h.value
+        while (h?.right) {
+            yield h.value
             h = h.right
-            yield v
         }
+        yield h?.value
         console.log('hello')
     }
 
