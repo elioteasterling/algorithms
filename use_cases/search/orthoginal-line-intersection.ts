@@ -60,12 +60,26 @@ export class LineIntersectionDetector {
  *      - space:     n + m^2
  *      - time: (1 + n / m^2) * (# of squares examined)
  * 
- *  - on avg, use an √n X √n sized grid
+ *  Rule of Thumb
+ *      - on avg, use an √n X √n sized grid, where n = total number of points
+ *          - too small -> wastes memory
+ *          - too large -> too many points per square -> wastes compute
  * 
- *  - applies only to non clustered data (e.g., many geometric data)
- *      - perf and such go nuts
- *      - adapt to clustered data by using a tree to recursively subdivide the 2D space
  * 
  *  - Examples:
  *      Grid, 2D Tree, Quadtree, BSP Tree
+ * 
+ *  Even Distribution of Points
+ *      - init   O(n)
+ *      - insert O(1)
+ *      - range  O(1) (for the # of points in the specified range)
+ * 
+ *  - applies only to non clustered data
+ *      - otherwise compute is slow
+ *      - adapt to clustered data by using a tree to recursively subdivide the 2D space
+ * 
+ *  Clustering (e.g., as is typical with geometric data sets)
+ *      - demands better algorithm
+ *      - need to adapt to the data
+ *      - e.g., higher dimensional computations
  */
