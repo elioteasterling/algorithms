@@ -2,7 +2,7 @@ import { RedBlackTree } from './trees/RedBlackTree'
 import { Comparable   } from "contracts/sort"
 
 // container for key-value pairs
-export class SymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
+export class SymbolTable<K extends Comparable, V> implements Iterable<V> {
     // a balanced  2-3 tree
     // could use a 2-M tree instead (check out: B-Trees)
     tree = new RedBlackTree<K, V>()
@@ -43,7 +43,7 @@ export class SymbolTable<K extends Comparable, V extends Comparable> implements 
  *      e.g., Database queries
  *            Count points on a line (1d interval)
  */
-export class OrderedSymbolTable<K extends Comparable, V extends Comparable> implements Iterable<V> {
+export class OrderedSymbolTable<K extends Comparable, V> implements Iterable<V> {
 
     tree = new RedBlackTree<K, V>()
 

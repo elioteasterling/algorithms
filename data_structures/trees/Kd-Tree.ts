@@ -1,7 +1,6 @@
 import { Comparable } from "contracts"
-import { KdNode } from "data_structures/Node"
-import { Point } from "models"
-import { BST } from "./BinaryTree"
+import { KdNode }     from "data_structures/Node"
+import { BST }        from "./BinaryTree"
 
 /** **************** 2d Range Search ****************
  *  - Goal : Check if a point is in some given rectangle
@@ -26,7 +25,7 @@ import { BST } from "./BinaryTree"
  *      - Worst case (when balanced):   r +   √ n
  */
 
-export class K2DTree<V extends Comparable> extends BST<Point, V> {
+export class K2DTree<Point extends Comparable, V> extends BST<Point, V> {
     // ---------------------- Nearest Neighbor ----------------------
     distance() {
         // pythagarus

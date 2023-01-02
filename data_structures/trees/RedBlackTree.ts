@@ -14,7 +14,7 @@ import { Queue } from 'data_structures/Queue'
  *          - most ops are same as for BSTs
  */
 
-export class RedBlackTree<K extends Comparable, V extends Comparable> implements Iterable<V> {
+export class RedBlackTree<K extends Comparable, V> implements Iterable<V> {
 
     root?: RedBlackNode<K, V>
     get(key: K): V | undefined {

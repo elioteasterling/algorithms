@@ -53,7 +53,7 @@ export class RedBlackNode<K, V> implements Valuable {
 }
 
 // ------------------------------------------------ K Nearest Neighbor Tree (INCOMPLETE !!!)
-export class KdNode<K extends Comparable, V extends Comparable> implements Comparable, Valuable {
+export class KdNode<K extends Comparable, V> implements Comparable, Valuable {
     children : number = 0
     key    ? : K
     value  ? : V

@@ -4,7 +4,7 @@ import { Queue } from "../Queue"
 
 // equivocal to quick sort
 // use a Red/Black tree for solving asymetry - better for symbol table
-export class BST<K extends Comparable, V extends Comparable> implements Iterable<K> {
+export class BST<K extends Comparable, V> implements Iterable<K> {
     
     root = new BSTNode<K, V>()
 
@@ -151,13 +151,13 @@ export class BST<K extends Comparable, V extends Comparable> implements Iterable
         return q
     }
 
-    values(): Queue<V> {
-        const v = new Queue<V>()
+    values(): V[] {
+        const v = []
         const q = new Queue<K>()
         this.ascendingOrder(q, this.root)
         for (const key of q) {
             const val = this.get(key)
-            if (val !== undefined) v.enqueue(val)
+            if (val !== undefined) v.push(val)
         }
         return v
     }
