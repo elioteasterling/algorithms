@@ -14,7 +14,7 @@ import { Queue } from 'data_structures/Queue'
  *          - most ops are same as for BSTs
  */
 
-export class RedBlackTree<K extends Comparable, V> implements Iterable<V> {
+export class RedBlackTree<K extends Comparable, V extends Comparable> implements Iterable<V> {
 
     root?: RedBlackNode<K, V>
     get(key: K): V | undefined {
@@ -243,7 +243,7 @@ export class RedBlackTree<K extends Comparable, V> implements Iterable<V> {
 
     // --------------------------------- 1D range searches ---------------------------------
 
-    // corresponds to size(K lo, K hi) in course
+    // corresponds to size(K lo, K hi)
     rangeSize(lo: K, hi: K) {
         if (this.has(hi)) return this.rank(hi) - this.rank(lo) + 1
         return                   this.rank(hi) - this.rank(lo)
